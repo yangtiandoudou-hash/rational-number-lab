@@ -331,6 +331,1560 @@
 
     .video-card {
       display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .video-screen {
+      min-height: 360px;
+      border-radius: 24px;
+      border: 2px solid #d6e5fb;
+      background:
+        linear-gradient(135deg, rgba(11, 98, 238, .08), transparent 42%),
+        linear-gradient(180deg, #ffffff, #edf6ff);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-screen::before {
+      content: "";
+      position: absolute;
+      inset: 42px;
+      border-radius: 50%;
+      border: 2px dashed rgba(18, 104, 243, .18);
+    }
+
+    .video-lesson {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+    }
+
+    .video-kicker {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      background: #eaf3ff;
+      color: #0f61df;
+      padding: 8px 12px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .video-lesson h3 {
+      margin: 0;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.15;
+      font-weight: 950;
+      color: #081433;
+    }
+
+    .video-lesson p {
+      margin: 0;
+      color: #4f607a;
+      font-size: 19px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .video-board {
+      border: 2px solid #d7e6fa;
+      background: rgba(255,255,255,.78);
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .video-board div {
+      border-radius: 16px;
+      background: #f4f9ff;
+      padding: 14px;
+      min-height: 88px;
+      color: #243653;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .video-board strong {
+      display: block;
+      color: #0f6df2;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .video-controls {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .play {
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      border: 0;
+      background: linear-gradient(180deg, #1f85ff, #0759df);
+      color: #fff;
+      font-size: 38px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 18px 40px rgba(18, 104, 243, .28);
+      z-index: 1;
+    }
+
+    .video-track {
+      height: 14px;
+      border-radius: 999px;
+      background: #dce8f8;
+      overflow: hidden;
+    }
+
+    .video-track span {
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0f6df2, #18aa49);
+      transition: width .3s ease;
+    }
+
+    .video-time {
+      color: #40526f;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .video-notes {
+      border: 2px solid #d9e7f8;
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .video-notes h3,
+    .quiz h3,
+    .mistake h3 {
+      margin: 0 0 16px;
+      font-size: 24px;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 12px;
+      color: #52637d;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .note-list div {
+      border-radius: 16px;
+      background: #f3f8ff;
+      padding: 12px 14px;
+    }
+
+    .number-lab {
+      padding: 44px 18px 24px;
+      min-height: 360px;
+      position: relative;
+    }
+
+    .directions {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 80px 32px;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .negative {
+      color: #0e66ef;
+    }
+
+    .positive {
+      color: #11a240;
+    }
+
+    .origin-label {
+      position: absolute;
+      left: calc(50% - 24px);
+      top: 66px;
+      color: #283650;
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .axis-wrap {
+      position: relative;
+      height: 140px;
+      margin: 0 18px;
+    }
+
+    .axis {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 48px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0d63ed 0 50%, #18aa49 50% 100%);
+      box-shadow: 0 2px 0 #d7e2f0;
+    }
+
+    .axis::before,
+    .axis::after {
+      content: "";
+      position: absolute;
+      top: -15px;
+      width: 0;
+      height: 0;
+      border-top: 18px solid transparent;
+      border-bottom: 18px solid transparent;
+    }
+
+    .axis::before {
+      left: -2px;
+      border-right: 38px solid #0d63ed;
+    }
+
+    .axis::after {
+      right: -2px;
+      border-left: 38px solid #18aa49;
+    }
+
+    .ticks {
+      position: absolute;
+      inset: 0 42px auto;
+      height: 108px;
+    }
+
+    .tick {
+      position: absolute;
+      top: 33px;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 42px;
+      border-radius: 4px;
+      background: #0a1433;
+    }
+
+    .tick span {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: 700;
+      color: #0b1838;
+    }
+
+    .point {
+      position: absolute;
+      top: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 5px solid #e9f3ff;
+      background: #0f6df2;
+      box-shadow: 0 0 0 4px rgba(18, 104, 243, .18), 0 10px 24px rgba(18, 104, 243, .3);
+      transform: translateX(-50%);
+      cursor: grab;
+      z-index: 3;
+    }
+
+    .point::before {
+      content: "A";
+      position: absolute;
+      left: 50%;
+      bottom: 48px;
+      transform: translateX(-50%);
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px 18px 18px 4px;
+      background: #0d64ee;
+      color: #fff;
+      font-size: 30px;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .25);
+    }
+
+    .distance {
+      position: absolute;
+      left: 50%;
+      top: 96px;
+      border-bottom: 4px dashed #b8c7db;
+      border-left: 4px dashed #b8c7db;
+      height: 52px;
+      transform-origin: left top;
+      color: #0f6df2;
+      font-size: 25px;
+      font-weight: 950;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+    }
+
+    .result-card {
+      width: min(780px, 92%);
+      margin: 16px auto 0;
+      border: 2px solid #dbe8f7;
+      border-radius: 26px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 20px 38px rgba(13,45,90,.1);
+      padding: 18px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+      font-size: 23px;
+      font-weight: 950;
+    }
+
+    .result-card strong {
+      font-size: 34px;
+      color: #0f6df2;
+    }
+
+    .result-card b {
+      font-size: 34px;
+      color: #17a64a;
+    }
+
+    .quiz {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .question {
+      border-radius: 24px;
+      background: #fff;
+      border: 2px solid #d9e7f8;
+      padding: 20px;
+    }
+
+    .question h3 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .question h3 span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      border-radius: 999px;
+      background: #eaf3ff;
+      color: #0f6df2;
+      padding: 6px 10px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .question p {
+      margin: 0 0 18px;
+      color: #293a57;
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      border: 2px solid #dbe7f8;
+      border-radius: 16px;
+      background: #f8fbff;
+      color: #293a57;
+      padding: 12px 14px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .option.correct {
+      border-color: rgba(24, 170, 73, .45);
+      background: #eaf9ef;
+      color: #0d8135;
+    }
+
+    .option.wrong {
+      border-color: rgba(225, 72, 72, .36);
+      background: #fff0f0;
+      color: #be2f2f;
+    }
+
+    .feedback {
+      border-radius: 24px;
+      background: #eef6ff;
+      border: 2px dashed #bdd2ee;
+      padding: 22px;
+      min-height: 260px;
+      color: #485a75;
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .mistake-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .mistake {
+      background: #fff;
+      border: 2px solid #d9e7f8;
+      border-radius: 22px;
+      padding: 22px;
+      min-height: 210px;
+    }
+
+    .mistake p {
+      margin: 8px 0 0;
+      color: #53647d;
+      font-weight: 800;
+      line-height: 1.75;
+    }
+
+    .side-card {
+      padding: 30px 24px 20px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 650px;
+    }
+
+    .assistant-head {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .bot {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 36% 42%, #0ff 0 6%, transparent 7%),
+        radial-gradient(circle at 63% 42%, #0ff 0 6%, transparent 7%),
+        linear-gradient(180deg, #f4fbff, #bad8ff);
+      border: 6px solid #dbeaff;
+      position: relative;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .18);
+    }
+
+    .bot::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      top: 23px;
+      height: 27px;
+      border-radius: 14px;
+      background: #0a1f49;
+    }
+
+    .bot::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      top: -10px;
+      width: 8px;
+      height: 14px;
+      border-radius: 8px;
+      background: #0f6df2;
+    }
+
+    .assistant-head h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #54647d;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #16bc54;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .bubble {
+      border-radius: 20px;
+      padding: 16px 18px;
+      color: #20314f;
+      font-size: 18px;
+      line-height: 1.6;
+      font-weight: 800;
+      max-width: 92%;
+    }
+
+    .bubble.user {
+      align-self: flex-end;
+      background: #dcecff;
+      border-top-right-radius: 8px;
+    }
+
+    .bubble.ai {
+      align-self: flex-start;
+      background: #fff;
+      border: 2px solid #dce8f8;
+      border-top-left-radius: 8px;
+    }
+
+    .mini-axis {
+      margin-top: 14px;
+      padding: 16px;
+      border: 2px solid #e1ebf8;
+      border-radius: 18px;
+      background: #fbfdff;
+    }
+
+    .mini-line {
+      height: 5px;
+      margin: 32px 10px 20px;
+      background: #17213c;
+      position: relative;
+      border-radius: 999px;
+    }
+
+    .mini-line span {
+      position: absolute;
+      top: -13px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .mini-line .m-neg {
+      left: 18%;
+      background: #0f6df2;
+    }
+
+    .mini-line .m-zero {
+      left: 50%;
+      width: 4px;
+      height: 34px;
+      top: -15px;
+      border-radius: 4px;
+      background: #17213c;
+    }
+
+    .mini-line .m-pos {
+      left: 82%;
+      background: #18aa49;
+    }
+
+    .quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 18px 0;
+    }
+
+    .quick button {
+      border: 1px solid #d8e5f6;
+      background: #f6faff;
+      border-radius: 999px;
+      padding: 9px 12px;
+      color: #40526f;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .ask {
+      display: grid;
+      grid-template-columns: 1fr 54px;
+      gap: 10px;
+      border-top: 1px solid #dce8f7;
+      padding-top: 16px;
+    }
+
+    .ask input {
+      width: 100%;
+      border: 2px solid #dbe7f8;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 17px;
+      outline: 0;
+      color: #263650;
+      font-weight: 800;
+    }
+
+    .ask button {
+      border: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #1c86ff, #075ee8);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(18, 104, 243, .24);
+    }
+
+    .mobile-bar {
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .mobile-bar select {
+      width: 100%;
+      border: 2px solid #cfe0f8;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #fff;
+      color: #17213c;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1120px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .progress-wrap {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .app {
+        width: min(100vw - 24px, 680px);
+        padding-top: 20px;
+      }
+
+      .lesson-rail {
+        display: none;
+      }
+
+      .mobile-bar {
+        display: block;
+      }
+
+      .brand {
+        gap: 16px;
+      }
+
+      .flask, .badge {
+        transform: scale(.8);
+        transform-origin: left center;
+      }
+
+      .progress-wrap {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .progress-wrap .badge {
+        display: none;
+      }
+
+      .main-card,
+      .side-card {
+        padding: 22px 16px;
+        border-radius: 22px;
+      }
+
+      .task {
+        border-left: 0;
+        padding-left: 0;
+        font-size: 18px;
+      }
+
+      .video-card,
+      .quiz,
+      .result-card,
+      .mistake-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .number-lab {
+        padding: 46px 0 24px;
+      }
+
+      .directions {
+        margin: 0 22px 36px;
+        font-size: 17px;
+      }
+
+      .tick span {
+        font-size: 20px;
+      }
+
+      .result-card {
+        padding: 20px;
+        font-size: 21px;
+      }
+
+      .result-card strong,
+      .result-card b {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="有理数探索实验室">
+        <div class="flask" aria-hidden="true"></div>
+        <h1>有理数探索实验室</h1>
+      </div>
+      <div class="progress-wrap" aria-label="学习进度">
+        <span>学习进度</span>
+        <div class="progress"><span id="progressFill"></span></div>
+        <strong id="progressText">35%</strong>
+        <div class="badge" aria-hidden="true">★</div>
+      </div>
+    </header>
+
+    <nav class="lesson-rail" id="lessonRail" aria-label="课时导航"></nav>
+    <div class="mobile-bar">
+      <select id="lessonSelect" aria-label="选择课时"></select>
+    </div>
+
+    <section class="grid">
+      <article class="panel main-card">
+        <div class="title-row">
+          <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+            <h2 id="lessonHeading">第3课时 数轴</h2>
+            <div class="task" id="lessonTask">拖动点 A，观察它表示的数</div>
+          </div>
+          <button class="reset" id="resetBtn" type="button">重置</button>
+        </div>
+
+        <div class="content-tabs" role="tablist" aria-label="学习模块">
+          <button class="tab active" data-tab="explore" type="button">交互学习</button>
+          <button class="tab" data-tab="video" type="button">视频学习</button>
+          <button class="tab" data-tab="quiz" type="button">小测试题</button>
+          <button class="tab" data-tab="mistake" type="button">错因分析</button>
+        </div>
+
+        <section class="tab-panel active" id="explore">
+          <div class="number-lab">
+            <div class="directions">
+              <span class="negative">负方向 ←</span>
+              <span class="positive">→ 正方向</span>
+            </div>
+            <div class="origin-label">原点</div>
+            <div class="axis-wrap" id="axisWrap">
+              <div class="axis" aria-hidden="true"></div>
+              <div class="ticks" id="ticks"></div>
+              <button class="point" id="pointA" type="button" aria-label="拖动点 A"></button>
+              <div class="distance" id="distanceMark">3 个单位长度</div>
+            </div>
+            <div class="result-card">
+              <div>观察结果&nbsp;&nbsp;<strong>A = <span id="pointValue">-3</span></strong></div>
+              <div>到原点的距离：<b id="absValue">3</b></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="video">
+          <div class="video-card">
+            <div class="video-screen">
+              <div class="video-lesson">
+                <span class="video-kicker" id="videoKicker">AI 微课 · 03:20</span>
+                <h3 id="videoHeadline">从原点出发，认识数轴</h3>
+                <p id="videoSummary">跟着动画先确定原点、正方向和单位长度，再读出点 A 表示的数。</p>
+              </div>
+              <div class="video-board" id="videoBoard"></div>
+              <div class="video-controls">
+                <button class="play" id="playBtn" type="button">▶</button>
+                <div class="video-track"><span id="videoTrack"></span></div>
+                <div class="video-time" id="videoTime">01:24 / 03:20</div>
+              </div>
+            </div>
+            <div class="video-notes">
+              <h3 id="videoTitle">3 分钟微课：数轴三要素</h3>
+              <div class="note-list" id="videoNotes"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="quiz">
+          <div class="quiz">
+            <div class="question-list" id="quizList"></div>
+            <aside class="feedback" id="quizFeedback">一共有 3 道题。点击任意答案，我会即时判断并讲清错因。</aside>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="mistake">
+          <div class="mistake-grid" id="mistakeGrid"></div>
+        </section>
+      </article>
+
+      <aside class="panel side-card" aria-label="实时答疑">
+        <div>
+          <div class="assistant-head">
+            <div class="bot" aria-hidden="true"></div>
+            <div>
+              <h2>实时答疑</h2>
+              <div class="status"><span class="dot"></span>AI 助教在线</div>
+            </div>
+          </div>
+          <div class="quick" id="quickQuestions"></div>
+        </div>
+
+        <div class="chat" id="chat">
+          <div class="bubble user">我为什么总把 -3 和 3 的位置弄反？</div>
+          <div class="bubble ai">
+            因为你先看了“距离”，但还没判断“方向”。从原点出发，向左是负，向右是正；走 3 个单位到左边，就是 -3。
+            <div class="mini-axis">
+              <div class="mini-line">
+                <span class="m-neg"></span>
+                <span class="m-zero"></span>
+                <span class="m-pos"></span>
+              </div>
+              <strong style="color:#0f6df2;">-3</strong>
+              <span style="margin-left:38%; color:#66758d;">0</span>
+              <strong style="float:right; color:#18aa49;">3</strong>
+            </div>
+          </div>
+        </div>
+
+        <form class="ask" id="askForm">
+          <input id="askInput" autocomplete="off" placeholder="有问题尽管问..." aria-label="输入问题">
+          <button type="submit" aria-label="发送">→</button>
+        </form>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const lessons = [
+      {
+        title: "有理数的意义",
+        task: "把生活中的量变成正数、负数和 0",
+        progress: 12,
+        value: -2,
+        video: ["正数表示比基准多、上升、收入等量。", "负数表示比基准少、下降、支出等量。", "0 不是正数也不是负数，它常常表示基准。"],
+        quiz: { q: "如果水位上升 2 cm 记作 +2 cm，那么下降 5 cm 记作？", options: ["+5 cm", "-5 cm", "0 cm"], answer: 1, why: "同一情境中，方向相反就用相反符号。上升为正，下降就是负，所以是 -5 cm。" },
+        mistakes: ["只看数字大小，忘记正负号表示方向。", "把 0 当成负数或正数。", "没有先确定题目中的基准量。"]
+      },
+      {
+        title: "数的分类",
+        task: "把数字卡片拖入正确的有理数家族",
+        progress: 24,
+        value: 4,
+        video: ["整数和分数统称为有理数。", "有限小数和循环小数都可以化成分数。", "分类时要先看形式，再看能否写成分数。"],
+        quiz: { q: "下列一定属于有理数的是？", options: ["π", "-7", "无限不循环小数"], answer: 1, why: "-7 是整数，整数属于有理数。π 和无限不循环小数不是有理数。" },
+        mistakes: ["看到小数就犹豫，其实有限小数也是有理数。", "把分数只理解成正分数。", "分类时漏掉 0。"]
+      },
+      {
+        title: "数轴",
+        task: "拖动点 A，观察它表示的数",
+        progress: 35,
+        value: -3,
+        video: ["数轴有三要素：原点、正方向、单位长度。", "原点右边表示正数，左边表示负数。", "到原点的距离只看长度，所以 -3 和 3 的距离都是 3。"],
+        quiz: { q: "数轴上点 A 在原点左边 3 个单位处，A 表示的数是？", options: ["3", "-3", "无法确定"], answer: 1, why: "先从原点出发，再判断方向。左边是负方向，走 3 个单位就是 -3。" },
+        mistakes: ["先数距离，忘记判断左右方向。", "单位长度不一致，导致读数偏差。", "把原点当成第一个刻度，而不是 0。"]
+      },
+      {
+        title: "相反数",
+        task: "找到关于原点对称的两个点",
+        progress: 48,
+        value: 5,
+        video: ["只有符号不同的两个数互为相反数。", "a 的相反数是 -a。", "0 的相反数仍然是 0。"],
+        quiz: { q: "-8 的相反数是？", options: ["-8", "8", "1/8"], answer: 1, why: "相反数只改变符号，不改变到原点的距离，所以 -8 的相反数是 8。" },
+        mistakes: ["把相反数和倒数混淆。", "忘记 0 的相反数是 0。", "看到 -a 就一定以为是负数。"]
+      },
+      {
+        title: "绝对值",
+        task: "观察点到原点的距离怎样变化",
+        progress: 60,
+        value: -5,
+        video: ["绝对值表示一个数到原点的距离。", "距离不能为负，所以绝对值非负。", "|-5| = 5，|5| = 5。"],
+        quiz: { q: "|-6| 的值是？", options: ["-6", "6", "0"], answer: 1, why: "绝对值看的是距离，距离没有负数，所以 |-6| = 6。" },
+        mistakes: ["看到负号就保留负号。", "把绝对值理解成去括号。", "忽略绝对值结果一定大于或等于 0。"]
+      },
+      {
+        title: "有理数的大小比较",
+        task: "用数轴判断谁更大",
+        progress: 72,
+        value: 2,
+        video: ["数轴上越往右，数越大。", "正数大于 0，负数小于 0。", "两个负数比较，离原点近的反而大。"],
+        quiz: { q: "比较 -2 和 -5，哪个更大？", options: ["-2", "-5", "一样大"], answer: 0, why: "在数轴上 -2 位于 -5 的右边，所以 -2 更大。" },
+        mistakes: ["两个负数只比较数字部分。", "忘记数轴右边更大。", "把绝对值大的负数当成更大。"]
+      },
+      {
+        title: "数轴的应用",
+        task: "用数轴解释加减中的移动",
+        progress: 84,
+        value: -1,
+        video: ["加正数向右移动。", "加负数向左移动。", "减去一个数可以转化为加它的相反数。"],
+        quiz: { q: "从 -1 出发向右移动 4 个单位，到达哪个数？", options: ["-5", "3", "4"], answer: 1, why: "向右是变大，-1 往右 4 个单位依次到 0、1、2、3。" },
+        mistakes: ["没有从起点开始数。", "把加负数的方向看反。", "移动时把起点也算作一个单位。"]
+      },
+      {
+        title: "综合应用",
+        task: "完成有理数单元闯关",
+        progress: 100,
+        value: 3,
+        video: ["读题先找基准、方向和单位。", "用数轴统一理解相反数、绝对值、大小比较。", "做完后用情境检查答案是否合理。"],
+        quiz: { q: "某地上午气温 -2℃，下午升高 5℃，下午气温是？", options: ["-7℃", "3℃", "5℃"], answer: 1, why: "升高 5℃ 表示在数轴上向右移动 5 个单位，-2 + 5 = 3℃。" },
+        mistakes: ["不会把生活情境转成数学表达。", "正负号和运算符号混在一起。", "答案算出后没有回到题意检查。"]
+      }
+    ];
+
+    let current = 2;
+    let pointValue = lessons[current].value;
+
+    const rail = document.querySelector("#lessonRail");
+    const select = document.querySelector("#lessonSelect");
+    const heading = document.querySelector("#lessonHeading");
+    const task = document.querySelector("#lessonTask");
+    const progressFill = document.querySelector("#progressFill");
+    const progressText = document.querySelector("#progressText");
+    const tabs = [...document.querySelectorAll(".tab")];
+    const panels = [...document.querySelectorAll(".tab-panel")];
+    const ticks = document.querySelector("#ticks");
+    const point = document.querySelector("#pointA");
+    const axisWrap = document.querySelector("#axisWrap");
+    const distanceMark = document.querySelector("#distanceMark");
+    const pointLabel = document.querySelector("#pointValue");
+    const absLabel = document.querySelector("#absValue");
+    const notes = document.querySelector("#videoNotes");
+    const videoHeadline = document.querySelector("#videoHeadline");
+    const videoSummary = document.querySelector("#videoSummary");
+    const videoBoard = document.querySelector("#videoBoard");
+    const videoTrack = document.querySelector("#videoTrack");
+    const videoTime = document.querySelector("#videoTime");
+    const quizList = document.querySelector("#quizList");
+    const quizFeedback = document.querySelector("#quizFeedback");
+    const mistakeGrid = document.querySelector("#mistakeGrid");
+    const chat = document.querySelector("#chat");
+    const quick = document.querySelector("#quickQuestions");
+
+    function initNav() {
+      rail.innerHTML = lessons.map((lesson, index) => `
+        <button class="lesson-step ${index === current ? "active" : ""}" data-index="${index}" type="button">
+          <span class="lesson-num">${index + 1}</span>
+          <span class="lesson-title">${lesson.title}</span>
+        </button>
+      `).join("");
+      select.innerHTML = lessons.map((lesson, index) => `<option value="${index}">第${index + 1}课时 ${lesson.title}</option>`).join("");
+      select.value = current;
+    }
+
+    function initTicks() {
+      const values = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+      ticks.innerHTML = values.map(v => {
+        const left = ((v + 6) / 12) * 100;
+        return `<div class="tick" style="left:${left}%"><span>${v}</span></div>`;
+      }).join("");
+    }
+
+    function getVideoScene(lesson, index) {
+      const scenes = [
+        ["生活基准", "先找“以谁为 0”。", "方向建模", "多用正号，少用负号。", "符号表达", "把情境翻译成数学语言。"],
+        ["分类树", "有理数可分为整数和分数。", "特殊成员", "0 是整数，也是有理数。", "判断方法", "能写成分数就是有理数。"],
+        ["三要素", "原点、正方向、单位长度缺一不可。", "读点", "从 0 出发先看左右。", "距离", "-3 和 3 到 0 都是 3。"],
+        ["对称", "相反数在数轴上关于 0 对称。", "符号", "只变符号，不变距离。", "特例", "0 的相反数还是 0。"],
+        ["距离", "绝对值表示到原点的距离。", "非负", "距离没有负数。", "符号", "负数的绝对值会变成正数。"],
+        ["位置", "数轴上越往右越大。", "负数比较", "离 0 越近，负数越大。", "策略", "不确定就画数轴。"],
+        ["移动", "加正数向右移动。", "反向", "加负数向左移动。", "检查", "移动后回到数轴读终点。"],
+        ["整合", "先找基准、方向、单位。", "工具", "用数轴统一理解本单元。", "验算", "答案要回到情境里检查。"]
+      ];
+      const scene = scenes[index];
+      return {
+        headline: `第${index + 1}课时：${lesson.title}微课讲解`,
+        summary: `本节用“观察、操作、追问”三步带学生理解：${lesson.video[0]}`,
+        board: [
+          { label: scene[0], text: scene[1] },
+          { label: scene[2], text: scene[3] },
+          { label: scene[4], text: scene[5] }
+        ]
+      };
+    }
+
+    function getQuizzes(lesson, index) {
+      const extra = [
+        [
+          { q: "温度比 0℃ 低 4℃，通常记作？", options: ["+4℃", "-4℃", "4 米"], answer: 1, why: "低于基准 0℃，方向是负方向，所以记作 -4℃。" },
+          { q: "下列说法正确的是？", options: ["0 是正数", "0 是负数", "0 是正负数的分界点"], answer: 2, why: "0 不是正数也不是负数，它常用来表示基准或分界。" }
+        ],
+        [
+          { q: "下列属于整数的是？", options: ["-3", "1/2", "0.25"], answer: 0, why: "-3 是负整数；分数和有限小数虽是有理数，但不是整数。" },
+          { q: "0.5 属于有理数吗？", options: ["属于", "不属于", "无法判断"], answer: 0, why: "0.5 可以写成 1/2，所以它是有理数。" }
+        ],
+        [
+          { q: "数轴上 0 右边 4 个单位的点表示？", options: ["-4", "4", "0"], answer: 1, why: "右边是正方向，离 0 四个单位就是 4。" },
+          { q: "数轴必须具备的三要素不包括？", options: ["原点", "单位长度", "颜色"], answer: 2, why: "数轴三要素是原点、正方向、单位长度，颜色不是必需条件。" }
+        ],
+        [
+          { q: "5 和 -5 的关系是？", options: ["互为相反数", "互为倒数", "相等"], answer: 0, why: "它们只有符号不同，且到原点距离相等，所以互为相反数。" },
+          { q: "0 的相反数是？", options: ["0", "1", "-1"], answer: 0, why: "0 的相反数仍然是 0，这是相反数里的特殊点。" }
+        ],
+        [
+          { q: "|3| 的值是？", options: ["3", "-3", "0"], answer: 0, why: "3 到原点的距离是 3，所以 |3| = 3。" },
+          { q: "绝对值的结果一定？", options: ["小于 0", "等于 0", "大于或等于 0"], answer: 2, why: "绝对值表示距离，距离一定是非负数。" }
+        ],
+        [
+          { q: "在数轴上，-6 和 -1 哪个更大？", options: ["-6", "-1", "一样大"], answer: 1, why: "-1 在 -6 的右边，所以 -1 更大。" },
+          { q: "比较两个负数时，常用的安全方法是？", options: ["只看数字部分", "画数轴看左右", "谁绝对值大谁大"], answer: 1, why: "两个负数容易看反，画数轴看谁在右边最稳。" }
+        ],
+        [
+          { q: "从 2 出发向左移动 5 个单位，到达？", options: ["7", "-3", "3"], answer: 1, why: "向左表示变小，2 - 5 = -3。" },
+          { q: "加上一个负数，在数轴上通常表示？", options: ["向右移动", "向左移动", "不移动"], answer: 1, why: "加负数就是往负方向移动，也就是向左移动。" }
+        ],
+        [
+          { q: "-4 的相反数与 |-4| 分别是？", options: ["4，4", "-4，4", "4，-4"], answer: 0, why: "-4 的相反数是 4，|-4| 表示距离，也是 4。" },
+          { q: "解决有理数情境题，第一步通常是？", options: ["先猜答案", "找基准和方向", "只看数字大小"], answer: 1, why: "先找基准和方向，才能正确使用正负号。" }
+        ]
+      ];
+      return [lesson.quiz, ...extra[index]];
+    }
+
+    function valueToLeft(value) {
+      const ticksBox = ticks.getBoundingClientRect();
+      const axisBox = axisWrap.getBoundingClientRect();
+      return (ticksBox.left - axisBox.left) + ((value + 6) / 12) * ticksBox.width;
+    }
+
+    function leftToValue(clientX) {
+      const ticksBox = ticks.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (clientX - ticksBox.left) / ticksBox.width));
+      return Math.round(ratio * 12 - 6);
+    }
+
+    function updatePoint(value) {
+      pointValue = Math.max(-6, Math.min(6, value));
+      const left = valueToLeft(pointValue);
+      point.style.left = `${left}px`;
+      pointLabel.textContent = pointValue;
+      absLabel.textContent = Math.abs(pointValue);
+
+      const origin = valueToLeft(0);
+      const distance = Math.abs(left - origin);
+      distanceMark.style.width = `${distance}px`;
+      distanceMark.style.left = `${Math.min(left, origin)}px`;
+      distanceMark.style.transform = "none";
+      distanceMark.textContent = `${Math.abs(pointValue)} 个单位长度`;
+    }
+
+    function renderLesson(index) {
+      current = Number(index);
+      const lesson = lessons[current];
+      pointValue = lesson.value;
+      heading.textContent = `第${current + 1}课时 ${lesson.title}`;
+      task.textContent = lesson.task;
+      progressFill.style.width = `${lesson.progress}%`;
+      progressText.textContent = `${lesson.progress}%`;
+      select.value = current;
+
+      document.querySelectorAll(".lesson-step").forEach((btn, i) => btn.classList.toggle("active", i === current));
+      const videoScene = getVideoScene(lesson, current);
+      videoHeadline.textContent = videoScene.headline;
+      videoSummary.textContent = videoScene.summary;
+      videoBoard.innerHTML = videoScene.board.map(item => `<div><strong>${item.label}</strong>${item.text}</div>`).join("");
+      videoTrack.style.width = `${Math.min(86, 28 + current * 8)}%`;
+      videoTime.textContent = `0${Math.min(2, current % 3) + 1}:24 / 03:20`;
+      notes.innerHTML = lesson.video.map(item => `<div>${item}</div>`).join("");
+      document.querySelector("#videoTitle").textContent = `3 分钟微课：${lesson.title}`;
+      quizFeedback.textContent = "一共有 3 道题。点击任意答案，我会即时判断并讲清错因。";
+      quizList.innerHTML = getQuizzes(lesson, current).map((quiz, qIndex) => `
+        <div class="question" data-question="${qIndex}">
+          <h3>第 ${qIndex + 1} 题 <span>${qIndex === 0 ? "基础" : qIndex === 1 ? "理解" : "应用"}</span></h3>
+          <p>${quiz.q}</p>
+          <div class="options">
+            ${quiz.options.map((option, i) => `<button class="option" data-question="${qIndex}" data-answer="${i}" type="button">${option}</button>`).join("")}
+          </div>
+        </div>
+      `).join("");
+      mistakeGrid.innerHTML = lesson.mistakes.map((m, i) => `
+        <article class="mistake">
+          <h3>错因 ${i + 1}</h3>
+          <p>${m}</p>
+          <p><strong>改正策略：</strong>${i === 0 ? "先画数轴或标方向，再计算。" : i === 1 ? "用一句定义检查自己的答案。" : "做完后回到题目情境验算。"}</p>
+        </article>
+      `).join("");
+      quick.innerHTML = ["这题怎么想？", "为什么要看方向？", "帮我举个例子"].map(q => `<button type="button">${q}</button>`).join("");
+
+      requestAnimationFrame(() => updatePoint(pointValue));
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        panels.forEach(p => p.classList.remove("active"));
+        tab.classList.add("active");
+        document.querySelector(`#${tab.dataset.tab}`).classList.add("active");
+        requestAnimationFrame(() => updatePoint(pointValue));
+      });
+    });
+
+    rail.addEventListener("click", event => {
+      const btn = event.target.closest(".lesson-step");
+      if (btn) renderLesson(btn.dataset.index);
+    });
+
+    select.addEventListener("change", event => renderLesson(event.target.value));
+    document.querySelector("#resetBtn").addEventListener("click", () => renderLesson(current));
+    window.addEventListener("resize", () => updatePoint(pointValue));
+
+    let dragging = false;
+    point.addEventListener("pointerdown", event => {
+      dragging = true;
+      point.setPointerCapture(event.pointerId);
+      point.style.cursor = "grabbing";
+    });
+    point.addEventListener("pointermove", event => {
+      if (dragging) updatePoint(leftToValue(event.clientX));
+    });
+    point.addEventListener("pointerup", () => {
+      dragging = false;
+      point.style.cursor = "grab";
+    });
+
+    quizList.addEventListener("click", event => {
+      const option = event.target.closest(".option");
+      if (!option) return;
+      const questionIndex = Number(option.dataset.question);
+      const quiz = getQuizzes(lessons[current], current)[questionIndex];
+      const answer = quiz.answer;
+      const questionCard = option.closest(".question");
+      questionCard.querySelectorAll(".option").forEach(btn => {
+        btn.classList.remove("correct", "wrong");
+        if (Number(btn.dataset.answer) === answer) btn.classList.add("correct");
+      });
+      if (Number(option.dataset.answer) !== answer) option.classList.add("wrong");
+      quizFeedback.innerHTML = `<strong>第 ${questionIndex + 1} 题：${Number(option.dataset.answer) === answer ? "答对了。" : "这里容易出错。"}</strong><br>${quiz.why}`;
+    });
+
+    document.querySelector("#playBtn").addEventListener("click", event => {
+      event.currentTarget.textContent = event.currentTarget.textContent === "▶" ? "Ⅱ" : "▶";
+      videoTrack.style.width = event.currentTarget.textContent === "Ⅱ" ? "76%" : `${Math.min(86, 28 + current * 8)}%`;
+    });
+
+    function replyFor(text) {
+      const lesson = lessons[current];
+      if (/方向|左右|正负/.test(text)) return `先从原点看方向：右边是正，左边是负。本课“${lesson.title}”最关键的一步，就是先判方向，再数单位长度。`;
+      if (/例子|举例/.test(text)) return `举个生活例子：海拔高于海平面 3 米记作 +3 米，低于海平面 3 米记作 -3 米。数字部分一样，但方向相反。`;
+      if (/错|不会|为什么/.test(text)) return `你的卡点很可能是：${lesson.mistakes[0]}。建议按“找基准、判方向、数单位、写符号”四步走。`;
+      return `围绕“${lesson.title}”，可以先抓住这句：${lesson.video[0]} 你也可以切到小测试，我会根据答案给你分析错因。`;
+    }
+
+    function addBubble(text, who) {
+      const div = document.createElement("div");
+      div.className = `bubble ${who}`;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    document.querySelector("#askForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = document.querySelector("#askInput");
+      const text = input.value.trim();
+      if (!text) return;
+      addBubble(text, "user");
+      input.value = "";
+      setTimeout(() => addBubble(replyFor(text), "ai"), 260);
+    });
+
+    quick.addEventListener("click", event => {
+      const btn = event.target.closest("button");
+      if (!btn) return;
+      addBubble(btn.textContent, "user");
+      setTimeout(() => addBubble(replyFor(btn.textContent), "ai"), 220);
+    });
+
+    initNav();
+    initTicks();
+    renderLesson(current);
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>有理数探索实验室</title>
+  <style>
+    :root {
+      --blue: #1268f3;
+      --blue-2: #0a4ed6;
+      --green: #18aa49;
+      --ink: #081433;
+      --muted: #65738d;
+      --line: #dbe6f6;
+      --panel: rgba(255, 255, 255, .86);
+      --shadow: 0 22px 60px rgba(13, 78, 180, .12);
+      --radius: 28px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 6% 12%, rgba(18, 104, 243, .13), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(24, 170, 73, .12), transparent 26%),
+        linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(18, 104, 243, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 104, 243, .05) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 78%, transparent);
+    }
+
+    .app {
+      width: min(1540px, calc(100vw - 44px));
+      margin: 0 auto;
+      padding: 30px 0 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .flask {
+      width: 72px;
+      height: 72px;
+      border: 5px solid var(--blue);
+      border-radius: 18px 18px 24px 24px;
+      position: relative;
+      background: linear-gradient(180deg, #fafdff 0 38%, #29d79b 39% 60%, #159bff 61% 100%);
+      box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .7), 0 12px 22px rgba(18, 104, 243, .18);
+      transform: perspective(80px) rotateX(2deg);
+    }
+
+    .flask::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: -22px;
+      height: 28px;
+      border: 5px solid var(--blue);
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      background: #fafdff;
+    }
+
+    .flask::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0b62ee;
+      left: 28px;
+      top: 18px;
+      box-shadow: 12px 20px 0 rgba(255,255,255,.75), -8px 30px 0 rgba(255,255,255,.62);
+    }
+
+    h1 {
+      font-size: clamp(38px, 5vw, 70px);
+      line-height: 1;
+      margin: 0;
+      font-weight: 950;
+      letter-spacing: .04em;
+    }
+
+    .progress-wrap {
+      min-width: 380px;
+      flex: 0 1 560px;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 18px;
+      font-size: 21px;
+      color: #31415e;
+      font-weight: 800;
+    }
+
+    .progress {
+      height: 22px;
+      border-radius: 999px;
+      background: #dfe7f5;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(36, 63, 111, .12);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 35%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0760f8, #1680ff);
+      transition: width .35s ease;
+    }
+
+    .badge {
+      width: 70px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #3a93ff, #0e52d8);
+      border: 6px solid #cfe3ff;
+      border-radius: 24px 24px 32px 32px;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .24);
+    }
+
+    .lesson-rail {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      align-items: start;
+      gap: 0;
+      margin: 8px 0 30px;
+    }
+
+    .lesson-step {
+      position: relative;
+      min-width: 0;
+      text-align: center;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: #60708a;
+      padding: 0 4px;
+      font: inherit;
+    }
+
+    .lesson-step::before {
+      content: "";
+      position: absolute;
+      top: 31px;
+      left: 0;
+      right: 0;
+      border-top: 3px dashed #b9c9e2;
+      z-index: 0;
+    }
+
+    .lesson-step:first-child::before {
+      left: 50%;
+    }
+
+    .lesson-step:last-child::before {
+      right: 50%;
+    }
+
+    .lesson-num {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 6px solid #edf3fb;
+      background: #fff;
+      color: #29364f;
+      font-size: 28px;
+      font-weight: 900;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 18px rgba(13, 45, 90, .06);
+      transition: .2s ease;
+    }
+
+    .lesson-title {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-step.active {
+      color: var(--blue);
+    }
+
+    .lesson-step.active .lesson-num {
+      color: #fff;
+      background: linear-gradient(180deg, #1a86ff, #075be7);
+      border-color: #cfe1ff;
+      transform: translateY(-5px) scale(1.12);
+      box-shadow: 0 14px 26px rgba(18, 104, 243, .32);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 430px;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 2px solid #cfe0f8;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .main-card {
+      min-height: 650px;
+      padding: 34px 34px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -120px -180px auto;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(24, 170, 73, .16), transparent 62%);
+      pointer-events: none;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .title-row h2 {
+      font-size: clamp(30px, 3vw, 48px);
+      margin: 0;
+      font-weight: 950;
+    }
+
+    .task {
+      color: var(--blue-2);
+      font-size: 24px;
+      font-weight: 900;
+      border-left: 2px solid #cfd9e8;
+      padding-left: 24px;
+    }
+
+    .reset {
+      border: 2px solid #d9e5f6;
+      background: #fff;
+      color: #33425e;
+      border-radius: 18px;
+      padding: 14px 28px;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(13, 45, 90, .06);
+    }
+
+    .content-tabs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 22px;
+    }
+
+    .tab {
+      border: 1px solid #d7e4f7;
+      background: #fff;
+      color: #50617b;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #0f6df2;
+      border-color: #0f6df2;
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(18, 104, 243, .22);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .video-card {
+      display: grid;
       grid-template-columns: 1.15fr .85fr;
       gap: 22px;
       align-items: stretch;
