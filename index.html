@@ -1353,7 +1353,19 @@
     @media (max-width: 820px) {
       .app {
         width: min(100vw - 24px, 680px);
-        padding-top: 20px;
+        padding-top: 12px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 30px;
+        line-height: 1.05;
       }
 
       .lesson-rail {
@@ -1362,19 +1374,32 @@
 
       .mobile-bar {
         display: block;
+        margin-bottom: 10px;
       }
 
       .brand {
-        gap: 16px;
+        gap: 10px;
       }
 
       .flask, .badge {
-        transform: scale(.8);
+        transform: scale(.68);
         transform-origin: left center;
       }
 
       .progress-wrap {
+        min-width: 0;
+        width: 100%;
         grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .progress {
+        height: 12px;
+      }
+
+      .progress-wrap .badge {
+        display: none;
       }
 
       .progress-wrap .badge {
@@ -1680,6 +1705,8 @@
     const chat = document.querySelector("#chat");
     const quick = document.querySelector("#quickQuestions");
     let interactionState = {};
+    const initialLesson = current;
+    const initialChat = chat.innerHTML;
 
     function initNav() {
       rail.innerHTML = lessons.map((lesson, index) => `
@@ -2060,14 +2087,20 @@
       if (current === 2) requestAnimationFrame(() => updatePoint(pointValue));
     }
 
+    function activateTab(tabName) {
+      tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tabName));
+      panels.forEach(p => p.classList.toggle("active", p.id === tabName));
+      if (current === 2) requestAnimationFrame(() => updatePoint(pointValue));
+    }
+
+    function resetPage() {
+      chat.innerHTML = initialChat;
+      renderLesson(initialLesson);
+      activateTab("explore");
+    }
+
     tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        panels.forEach(p => p.classList.remove("active"));
-        tab.classList.add("active");
-        document.querySelector(`#${tab.dataset.tab}`).classList.add("active");
-        if (current === 2) requestAnimationFrame(() => updatePoint(pointValue));
-      });
+      tab.addEventListener("click", () => activateTab(tab.dataset.tab));
     });
 
     rail.addEventListener("click", event => {
@@ -2076,7 +2109,7 @@
     });
 
     select.addEventListener("change", event => renderLesson(event.target.value));
-    document.querySelector("#resetBtn").addEventListener("click", () => renderLesson(current));
+    document.querySelector("#resetBtn").addEventListener("click", resetPage);
     window.addEventListener("resize", () => {
       if (current === 2) updatePoint(pointValue);
     });
@@ -2219,7 +2252,7 @@
 
     function replyFor(text) {
       const lesson = lessons[current];
-      if (/方向|左右|正负/.test(text)) return `先从原点看方向：右边是正，左边是负。本课“${lesson.title}”最关键的一步，就是先判方向，再数单位长度。`;
+      if (/方向|左右|正负|negative|direction|sign|left|right/i.test(text)) return `先从原点看方向：右边是正，左边是负。本课“${lesson.title}”最关键的一步，就是先判方向，再数单位长度。`;
       if (/例子|举例/.test(text)) return `举个生活例子：海拔高于海平面 3 米记作 +3 米，低于海平面 3 米记作 -3 米。数字部分一样，但方向相反。`;
       if (/错|不会|为什么/.test(text)) return `你的卡点很可能是：${lesson.mistakes[0]}。建议按“找基准、判方向、数单位、写符号”四步走。`;
       return `围绕“${lesson.title}”，可以先抓住这句：${lesson.video[0]} 你也可以切到小测试，我会根据答案给你分析错因。`;
