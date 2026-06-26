@@ -1284,6 +1284,56 @@
       cursor: pointer;
     }
 
+    .ai-config {
+      border: 1px solid #dbe8fa;
+      background: #f7fbff;
+      border-radius: 18px;
+      padding: 12px;
+      margin: 0 0 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .ai-config summary {
+      cursor: pointer;
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .ai-config label {
+      display: grid;
+      gap: 5px;
+      color: #53647d;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .ai-config input {
+      border: 1px solid #d7e4f6;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .ai-config button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .ai-config small {
+      color: #6b7b93;
+      line-height: 1.5;
+      font-weight: 800;
+    }
+
     .ask {
       display: grid;
       grid-template-columns: 1fr 54px;
@@ -1566,10 +1616,24 @@
             <div class="bot" aria-hidden="true"></div>
             <div>
               <h2>实时答疑</h2>
-              <div class="status"><span class="dot"></span>AI 助教在线</div>
+              <div class="status" id="aiStatus"><span class="dot"></span>本地讲解模式</div>
             </div>
           </div>
           <div class="quick" id="quickQuestions"></div>
+          <details class="ai-config">
+            <summary>配置真实 AI 助教</summary>
+            <label>base_url
+              <input id="aiBaseUrl" autocomplete="off" placeholder="https://api.openai.com/v1">
+            </label>
+            <label>api_key
+              <input id="aiApiKey" autocomplete="off" type="password" placeholder="sk-...">
+            </label>
+            <label>model
+              <input id="aiModel" autocomplete="off" placeholder="gpt-4o-mini">
+            </label>
+            <button type="button" id="saveAiConfig">保存设置</button>
+            <small>保存后会从本浏览器直接调用 OpenAI 兼容接口；密钥只存于当前浏览器，请勿在公共设备保存。</small>
+          </details>
         </div>
 
         <div class="chat" id="chat">
@@ -2264,18 +2328,93 @@
       div.textContent = text;
       chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
+      return div;
     }
 
     const askForm = document.querySelector("#askForm");
     const askInput = document.querySelector("#askInput");
+    const aiStatus = document.querySelector("#aiStatus");
+    const aiBaseUrl = document.querySelector("#aiBaseUrl");
+    const aiApiKey = document.querySelector("#aiApiKey");
+    const aiModel = document.querySelector("#aiModel");
+    const saveAiConfig = document.querySelector("#saveAiConfig");
+    const aiConfigKey = "mathLabAiConfig";
 
-    function submitQuestion(event) {
+    function getAiConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(aiConfigKey) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function setAiStatus() {
+      const config = getAiConfig();
+      aiStatus.innerHTML = config.baseUrl && config.apiKey
+        ? `<span class="dot"></span>真实 AI 已配置`
+        : `<span class="dot"></span>本地讲解模式`;
+    }
+
+    function loadAiConfig() {
+      const config = getAiConfig();
+      aiBaseUrl.value = config.baseUrl || "";
+      aiApiKey.value = config.apiKey || "";
+      aiModel.value = config.model || "gpt-4o-mini";
+      setAiStatus();
+    }
+
+    saveAiConfig.addEventListener("click", () => {
+      localStorage.setItem(aiConfigKey, JSON.stringify({
+        baseUrl: aiBaseUrl.value.trim(),
+        apiKey: aiApiKey.value.trim(),
+        model: aiModel.value.trim() || "gpt-4o-mini"
+      }));
+      setAiStatus();
+      addBubble("AI接口设置已保存。下一次提问会优先调用真实模型。", "ai");
+    });
+
+    async function askRealAi(text) {
+      const config = getAiConfig();
+      if (!config.baseUrl || !config.apiKey) return "";
+      const lesson = lessons[current];
+      const endpoint = `${config.baseUrl.replace(/\/+$/, "")}/chat/completions`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${config.apiKey}`
+        },
+        body: JSON.stringify({
+          model: config.model || "gpt-4o-mini",
+          temperature: 0.25,
+          messages: [
+            { role: "system", content: "你是七年级数学预习AI助教。回答要准确、温和、分步骤，优先启发学生思考。每次回答控制在180字以内，不要编造视频或外部链接。" },
+            { role: "user", content: `当前专题：有理数。当前课时：${lesson.title}。学习目标：${lesson.task}。学生问题：${text}` }
+          ]
+        })
+      });
+      if (!response.ok) throw new Error(`AI接口返回 ${response.status}`);
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content?.trim() || "";
+    }
+
+    async function answerQuestion(text) {
+      const bubble = addBubble("正在连接AI助教...", "ai");
+      try {
+        bubble.textContent = await askRealAi(text) || replyFor(text);
+      } catch (error) {
+        bubble.textContent = `AI接口暂时不可用，先用本地讲解帮你：${replyFor(text)}`;
+      }
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function submitQuestion(event) {
       event.preventDefault();
       const text = askInput.value.trim();
       if (!text) return;
       addBubble(text, "user");
       askInput.value = "";
-      setTimeout(() => addBubble(replyFor(text), "ai"), 260);
+      await answerQuestion(text);
     }
 
     askForm.addEventListener("submit", submitQuestion);
@@ -2288,9 +2427,10 @@
       const btn = event.target.closest("button");
       if (!btn) return;
       addBubble(btn.textContent, "user");
-      setTimeout(() => addBubble(replyFor(btn.textContent), "ai"), 220);
+      answerQuestion(btn.textContent);
     });
 
+    loadAiConfig();
     initNav();
     initTicks();
     renderLesson(current);
