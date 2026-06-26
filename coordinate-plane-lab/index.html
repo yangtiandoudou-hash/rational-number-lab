@@ -964,14 +964,17 @@
     @media (max-width: 820px) {
       .app {
         width: min(100vw - 24px, 680px);
-        padding-top: 20px;
+        padding-top: 12px;
       }
 
       .lesson-rail { display: none; }
-      .mobile-bar { display: block; }
-      .brand { gap: 16px; }
-      .lab-icon, .badge { transform: scale(.82); transform-origin: left center; }
-      .progress-wrap { grid-template-columns: auto 1fr auto; }
+      .mobile-bar { display: block; margin-bottom: 10px; }
+      .topbar { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
+      h1 { font-size: 30px; line-height: 1.05; }
+      .brand { gap: 10px; }
+      .lab-icon, .badge { transform: scale(.68); transform-origin: left center; }
+      .progress-wrap { min-width: 0; width: 100%; grid-template-columns: auto 1fr auto; gap: 8px; font-size: 14px; }
+      .progress { height: 12px; }
       .progress-wrap .badge { display: none; }
 
       .main-card,
@@ -1219,6 +1222,8 @@
     const mistakeGrid = document.querySelector("#mistakeGrid");
     const quick = document.querySelector("#quickQuestions");
     const chat = document.querySelector("#chat");
+    const initialLesson = current;
+    const initialChat = chat.innerHTML;
 
     function planeShell(extra = "") {
       return `
@@ -1464,13 +1469,19 @@
       }
     });
 
+    function activateTab(tabName) {
+      tabs.forEach(tab => tab.classList.toggle("active", tab.dataset.tab === tabName));
+      panels.forEach(panel => panel.classList.toggle("active", panel.id === tabName));
+    }
+
+    function resetPage() {
+      chat.innerHTML = initialChat;
+      renderLesson(initialLesson);
+      activateTab("explore");
+    }
+
     tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(item => item.classList.remove("active"));
-        panels.forEach(panel => panel.classList.remove("active"));
-        tab.classList.add("active");
-        document.querySelector(`#${tab.dataset.tab}`).classList.add("active");
-      });
+      tab.addEventListener("click", () => activateTab(tab.dataset.tab));
     });
 
     rail.addEventListener("click", event => {
@@ -1478,7 +1489,7 @@
       if (btn) renderLesson(btn.dataset.index);
     });
     select.addEventListener("change", event => renderLesson(event.target.value));
-    document.querySelector("#resetBtn").addEventListener("click", () => renderLesson(current));
+    document.querySelector("#resetBtn").addEventListener("click", resetPage);
 
     quizList.addEventListener("click", event => {
       const option = event.target.closest(".option");
@@ -1497,9 +1508,9 @@
 
     function replyFor(text) {
       const lesson = lessons[current];
-      if (/先横|先写|顺序|x.*y/.test(text)) return "坐标按 (x, y) 写，意思是先确定横向位置，再确定纵向位置。顺序换了，点通常就换位置。";
-      if (/象限|第几/.test(text)) return "判断象限先看 x 的正负决定左右，再看 y 的正负决定上下：右上是一象限，左上是二象限，左下是三象限，右下是四象限。";
-      if (/平移|移动/.test(text)) return "左右平移改变横坐标 x，上下平移改变纵坐标 y。向右、向上是加，向左、向下是减。";
+      if (/先横|先写|顺序|x.*y|coordinate|order/i.test(text)) return "坐标按 (x, y) 写，意思是先确定横向位置，再确定纵向位置。顺序换了，点通常就换位置。";
+      if (/象限|第几|quadrant|sign/i.test(text)) return "判断象限先看 x 的正负决定左右，再看 y 的正负决定上下：右上是一象限，左上是二象限，左下是三象限，右下是四象限。";
+      if (/平移|移动|translate|move/i.test(text)) return "左右平移改变横坐标 x，上下平移改变纵坐标 y。向右、向上是加，向左、向下是减。";
       return `本课“${lesson.title}”先抓住这句：${lesson.video[0]} 你可以切到小测试，我会根据答案解释错因。`;
     }
 
