@@ -1,0 +1,2679 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>有理数探索实验室</title>
+  <style>
+    :root {
+      --blue: #1268f3;
+      --blue-2: #0a4ed6;
+      --green: #18aa49;
+      --ink: #081433;
+      --muted: #65738d;
+      --line: #dbe6f6;
+      --panel: rgba(255, 255, 255, .86);
+      --shadow: 0 22px 60px rgba(13, 78, 180, .12);
+      --radius: 28px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 6% 12%, rgba(18, 104, 243, .13), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(24, 170, 73, .12), transparent 26%),
+        linear-gradient(180deg, #f7fbff 0%, #eef6ff 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(18, 104, 243, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 104, 243, .05) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 78%, transparent);
+    }
+
+    .app {
+      width: min(1540px, calc(100vw - 44px));
+      margin: 0 auto;
+      padding: 30px 0 36px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .flask {
+      width: 72px;
+      height: 72px;
+      border: 5px solid var(--blue);
+      border-radius: 18px 18px 24px 24px;
+      position: relative;
+      background: linear-gradient(180deg, #fafdff 0 38%, #29d79b 39% 60%, #159bff 61% 100%);
+      box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .7), 0 12px 22px rgba(18, 104, 243, .18);
+      transform: perspective(80px) rotateX(2deg);
+    }
+
+    .flask::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: -22px;
+      height: 28px;
+      border: 5px solid var(--blue);
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      background: #fafdff;
+    }
+
+    .flask::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0b62ee;
+      left: 28px;
+      top: 18px;
+      box-shadow: 12px 20px 0 rgba(255,255,255,.75), -8px 30px 0 rgba(255,255,255,.62);
+    }
+
+    h1 {
+      font-size: clamp(38px, 5vw, 70px);
+      line-height: 1;
+      margin: 0;
+      font-weight: 950;
+      letter-spacing: .04em;
+    }
+
+    .progress-wrap {
+      min-width: 380px;
+      flex: 0 1 560px;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 18px;
+      font-size: 21px;
+      color: #31415e;
+      font-weight: 800;
+    }
+
+    .progress {
+      height: 22px;
+      border-radius: 999px;
+      background: #dfe7f5;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(36, 63, 111, .12);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 35%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0760f8, #1680ff);
+      transition: width .35s ease;
+    }
+
+    .badge {
+      width: 70px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #3a93ff, #0e52d8);
+      border: 6px solid #cfe3ff;
+      border-radius: 24px 24px 32px 32px;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .24);
+    }
+
+    .lesson-rail {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      align-items: start;
+      gap: 0;
+      margin: 8px 0 30px;
+    }
+
+    .lesson-step {
+      position: relative;
+      min-width: 0;
+      text-align: center;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: #60708a;
+      padding: 0 4px;
+      font: inherit;
+    }
+
+    .lesson-step::before {
+      content: "";
+      position: absolute;
+      top: 31px;
+      left: 0;
+      right: 0;
+      border-top: 3px dashed #b9c9e2;
+      z-index: 0;
+    }
+
+    .lesson-step:first-child::before {
+      left: 50%;
+    }
+
+    .lesson-step:last-child::before {
+      right: 50%;
+    }
+
+    .lesson-num {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 6px solid #edf3fb;
+      background: #fff;
+      color: #29364f;
+      font-size: 28px;
+      font-weight: 900;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 18px rgba(13, 45, 90, .06);
+      transition: .2s ease;
+    }
+
+    .lesson-title {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lesson-step.active {
+      color: var(--blue);
+    }
+
+    .lesson-step.active .lesson-num {
+      color: #fff;
+      background: linear-gradient(180deg, #1a86ff, #075be7);
+      border-color: #cfe1ff;
+      transform: translateY(-5px) scale(1.12);
+      box-shadow: 0 14px 26px rgba(18, 104, 243, .32);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 430px;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 2px solid #cfe0f8;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .main-card {
+      min-height: 650px;
+      padding: 34px 34px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -120px -180px auto;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(24, 170, 73, .16), transparent 62%);
+      pointer-events: none;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .title-row h2 {
+      font-size: clamp(30px, 3vw, 48px);
+      margin: 0;
+      font-weight: 950;
+    }
+
+    .task {
+      color: var(--blue-2);
+      font-size: 24px;
+      font-weight: 900;
+      border-left: 2px solid #cfd9e8;
+      padding-left: 24px;
+    }
+
+    .reset {
+      border: 2px solid #d9e5f6;
+      background: #fff;
+      color: #33425e;
+      border-radius: 18px;
+      padding: 14px 28px;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(13, 45, 90, .06);
+    }
+
+    .content-tabs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 22px;
+    }
+
+    .tab {
+      border: 1px solid #d7e4f7;
+      background: #fff;
+      color: #50617b;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #0f6df2;
+      border-color: #0f6df2;
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(18, 104, 243, .22);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .video-card {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .video-screen {
+      min-height: 360px;
+      border-radius: 24px;
+      border: 2px solid #d6e5fb;
+      background:
+        linear-gradient(135deg, rgba(11, 98, 238, .08), transparent 42%),
+        linear-gradient(180deg, #ffffff, #edf6ff);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-screen::before {
+      content: "";
+      position: absolute;
+      inset: 42px;
+      border-radius: 50%;
+      border: 2px dashed rgba(18, 104, 243, .18);
+    }
+
+    .video-lesson {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+    }
+
+    .video-kicker {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      background: #eaf3ff;
+      color: #0f61df;
+      padding: 8px 12px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .video-lesson h3 {
+      margin: 0;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.15;
+      font-weight: 950;
+      color: #081433;
+    }
+
+    .video-lesson p {
+      margin: 0;
+      color: #4f607a;
+      font-size: 19px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .video-board {
+      border: 2px solid #d7e6fa;
+      background: rgba(255,255,255,.78);
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .video-board div {
+      border-radius: 16px;
+      background: #f4f9ff;
+      padding: 14px;
+      min-height: 88px;
+      color: #243653;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .video-board strong {
+      display: block;
+      color: #0f6df2;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .video-controls {
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .play {
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      border: 0;
+      background: linear-gradient(180deg, #1f85ff, #0759df);
+      color: #fff;
+      font-size: 38px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 18px 40px rgba(18, 104, 243, .28);
+      z-index: 1;
+    }
+
+    .video-track {
+      height: 14px;
+      border-radius: 999px;
+      background: #dce8f8;
+      overflow: hidden;
+    }
+
+    .video-track span {
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0f6df2, #18aa49);
+      transition: width .3s ease;
+    }
+
+    .video-time {
+      color: #40526f;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .video-source-note {
+      border-radius: 18px;
+      background: #eef6ff;
+      border: 2px solid #cfe0f8;
+      color: #30425f;
+      padding: 14px 16px;
+      font-weight: 900;
+      line-height: 1.65;
+    }
+
+    .video-source-note a {
+      display: inline-flex;
+      width: fit-content;
+      margin-top: 10px;
+      border-radius: 999px;
+      background: #0f6df2;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 14px;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .2);
+    }
+
+    .video-notes {
+      border: 2px solid #d9e7f8;
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .video-notes h3,
+    .quiz h3,
+    .mistake h3 {
+      margin: 0 0 16px;
+      font-size: 24px;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 12px;
+      color: #52637d;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .note-list div {
+      border-radius: 16px;
+      background: #f3f8ff;
+      padding: 12px 14px;
+    }
+
+    .number-lab {
+      padding: 44px 18px 24px;
+      min-height: 360px;
+      position: relative;
+    }
+
+    .interaction-stage {
+      min-height: 390px;
+      border: 2px solid #d8e6f8;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 85% 82%, rgba(24, 170, 73, .12), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(246,250,255,.92));
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .interaction-stage[hidden],
+    .number-lab[hidden] {
+      display: none;
+    }
+
+    .experiment-board {
+      display: grid;
+      gap: 18px;
+    }
+
+    .experiment-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 22px;
+      font-weight: 950;
+      color: #071637;
+    }
+
+    .experiment-title span {
+      color: #0f6df2;
+      font-size: 18px;
+    }
+
+    .lab-feedback {
+      border-radius: 20px;
+      background: #f0f7ff;
+      border: 2px dashed #bdd2ee;
+      color: #344765;
+      padding: 16px 18px;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .scenario-grid,
+    .pair-grid,
+    .abs-grid,
+    .move-grid,
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .scenario-card,
+    .number-card,
+    .pair-card,
+    .abs-card,
+    .move-card,
+    .challenge-card {
+      border: 2px solid #dbe8f8;
+      border-radius: 22px;
+      background: #fff;
+      padding: 18px;
+      color: #263955;
+      font-weight: 900;
+      line-height: 1.55;
+      box-shadow: 0 12px 26px rgba(13, 45, 90, .06);
+    }
+
+    .scenario-card h3,
+    .pair-card h3,
+    .abs-card h3,
+    .move-card h3,
+    .challenge-card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: #081433;
+    }
+
+    .choice-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .choice-row button,
+    .class-bin,
+    .sort-number,
+    .move-button,
+    .challenge-option {
+      border: 2px solid #d8e5f7;
+      border-radius: 999px;
+      background: #f7fbff;
+      color: #0d55d9;
+      padding: 10px 14px;
+      font-size: 17px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .choice-row button.correct,
+    .class-bin.correct,
+    .sort-number.used,
+    .move-button.correct,
+    .challenge-option.correct {
+      border-color: rgba(24, 170, 73, .5);
+      background: #eaf9ef;
+      color: #0d8135;
+    }
+
+    .choice-row button.wrong,
+    .class-bin.wrong,
+    .move-button.wrong,
+    .challenge-option.wrong {
+      border-color: rgba(225, 72, 72, .38);
+      background: #fff0f0;
+      color: #be2f2f;
+    }
+
+    .classify-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .card-bank,
+    .bin-board {
+      border: 2px solid #dbe8f8;
+      border-radius: 24px;
+      background: #fff;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .card-bank {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .number-card {
+      min-height: 76px;
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      color: #0f6df2;
+      cursor: pointer;
+    }
+
+    .number-card.selected {
+      background: #eaf3ff;
+      border-color: #0f6df2;
+      transform: translateY(-2px);
+    }
+
+    .bin-board {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .class-bin {
+      border-radius: 20px;
+      min-height: 88px;
+      text-align: left;
+    }
+
+    .class-bin small {
+      display: block;
+      margin-top: 6px;
+      color: #6b7890;
+      font-size: 14px;
+    }
+
+    .mirror-board,
+    .abs-meter,
+    .sort-board,
+    .move-board {
+      border: 2px solid #dbe8f8;
+      border-radius: 24px;
+      background: #fff;
+      padding: 20px;
+    }
+
+    .mirror-line,
+    .abs-line,
+    .move-line {
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0d63ed 0 50%, #18aa49 50% 100%);
+      position: relative;
+      margin: 52px 28px 34px;
+    }
+
+    .mirror-line::before,
+    .abs-line::before,
+    .move-line::before {
+      content: "0";
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      color: #0b1838;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .mirror-dot,
+    .abs-dot,
+    .move-dot {
+      position: absolute;
+      top: -18px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #0f6df2;
+      color: #fff;
+      border: 5px solid #e9f3ff;
+      transform: translateX(-50%);
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(18, 104, 243, .25);
+    }
+
+    .mirror-dot.partner,
+    .abs-dot.partner,
+    .move-dot.end {
+      background: #18aa49;
+    }
+
+    .abs-value {
+      font-size: 38px;
+      font-weight: 950;
+      color: #18aa49;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .sort-pool,
+    .sort-result {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .sort-result {
+      min-height: 72px;
+      border-radius: 20px;
+      background: #f4f9ff;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .sort-chip {
+      border-radius: 999px;
+      background: #0f6df2;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .activity-pack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .activity-card {
+      border: 2px solid #d9e7f8;
+      border-radius: 22px;
+      background: rgba(255,255,255,.9);
+      padding: 18px;
+      color: #2c3e5c;
+      font-weight: 850;
+      line-height: 1.65;
+    }
+
+    .activity-card h3 {
+      margin: 0 0 10px;
+      color: #071637;
+      font-size: 22px;
+    }
+
+    .activity-card strong {
+      color: #0f6df2;
+    }
+
+    .activity-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .activity-tags span {
+      border-radius: 999px;
+      background: #eef6ff;
+      color: #0f61df;
+      padding: 8px 12px;
+      font-weight: 950;
+    }
+
+    .video-script {
+      margin-top: 16px;
+      border-radius: 18px;
+      background: #f5f9ff;
+      padding: 16px;
+      color: #40526f;
+      font-weight: 850;
+      line-height: 1.75;
+    }
+
+    .video-script strong {
+      color: #0f6df2;
+    }
+
+    .directions {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 80px 32px;
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+    .negative {
+      color: #0e66ef;
+    }
+
+    .positive {
+      color: #11a240;
+    }
+
+    .origin-label {
+      position: absolute;
+      left: calc(50% - 24px);
+      top: 66px;
+      color: #283650;
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .axis-wrap {
+      position: relative;
+      height: 140px;
+      margin: 0 18px;
+    }
+
+    .axis {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 48px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0d63ed 0 50%, #18aa49 50% 100%);
+      box-shadow: 0 2px 0 #d7e2f0;
+    }
+
+    .axis::before,
+    .axis::after {
+      content: "";
+      position: absolute;
+      top: -15px;
+      width: 0;
+      height: 0;
+      border-top: 18px solid transparent;
+      border-bottom: 18px solid transparent;
+    }
+
+    .axis::before {
+      left: -2px;
+      border-right: 38px solid #0d63ed;
+    }
+
+    .axis::after {
+      right: -2px;
+      border-left: 38px solid #18aa49;
+    }
+
+    .ticks {
+      position: absolute;
+      inset: 0 42px auto;
+      height: 108px;
+    }
+
+    .tick {
+      position: absolute;
+      top: 33px;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 42px;
+      border-radius: 4px;
+      background: #0a1433;
+    }
+
+    .tick span {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: 700;
+      color: #0b1838;
+    }
+
+    .point {
+      position: absolute;
+      top: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 5px solid #e9f3ff;
+      background: #0f6df2;
+      box-shadow: 0 0 0 4px rgba(18, 104, 243, .18), 0 10px 24px rgba(18, 104, 243, .3);
+      transform: translateX(-50%);
+      cursor: grab;
+      z-index: 3;
+    }
+
+    .point::before {
+      content: "A";
+      position: absolute;
+      left: 50%;
+      bottom: 48px;
+      transform: translateX(-50%);
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px 18px 18px 4px;
+      background: #0d64ee;
+      color: #fff;
+      font-size: 30px;
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .25);
+    }
+
+    .distance {
+      position: absolute;
+      left: 50%;
+      top: 96px;
+      border-bottom: 4px dashed #b8c7db;
+      border-left: 4px dashed #b8c7db;
+      height: 52px;
+      transform-origin: left top;
+      color: #0f6df2;
+      font-size: 25px;
+      font-weight: 950;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+    }
+
+    .result-card {
+      width: min(780px, 92%);
+      margin: 16px auto 0;
+      border: 2px solid #dbe8f7;
+      border-radius: 26px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 20px 38px rgba(13,45,90,.1);
+      padding: 18px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+      font-size: 23px;
+      font-weight: 950;
+    }
+
+    .result-card strong {
+      font-size: 34px;
+      color: #0f6df2;
+    }
+
+    .result-card b {
+      font-size: 34px;
+      color: #17a64a;
+    }
+
+    .quiz {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .question {
+      border-radius: 24px;
+      background: #fff;
+      border: 2px solid #d9e7f8;
+      padding: 20px;
+    }
+
+    .question h3 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .question h3 span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      border-radius: 999px;
+      background: #eaf3ff;
+      color: #0f6df2;
+      padding: 6px 10px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .question p {
+      margin: 0 0 18px;
+      color: #293a57;
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      border: 2px solid #dbe7f8;
+      border-radius: 16px;
+      background: #f8fbff;
+      color: #293a57;
+      padding: 12px 14px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .option.correct {
+      border-color: rgba(24, 170, 73, .45);
+      background: #eaf9ef;
+      color: #0d8135;
+    }
+
+    .option.wrong {
+      border-color: rgba(225, 72, 72, .36);
+      background: #fff0f0;
+      color: #be2f2f;
+    }
+
+    .feedback {
+      border-radius: 24px;
+      background: #eef6ff;
+      border: 2px dashed #bdd2ee;
+      padding: 22px;
+      min-height: 260px;
+      color: #485a75;
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 800;
+    }
+
+    .mistake-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .mistake {
+      background: #fff;
+      border: 2px solid #d9e7f8;
+      border-radius: 22px;
+      padding: 22px;
+      min-height: 210px;
+    }
+
+    .mistake p {
+      margin: 8px 0 0;
+      color: #53647d;
+      font-weight: 800;
+      line-height: 1.75;
+    }
+
+    .side-card {
+      padding: 30px 24px 20px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 650px;
+    }
+
+    .assistant-head {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .bot {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 36% 42%, #0ff 0 6%, transparent 7%),
+        radial-gradient(circle at 63% 42%, #0ff 0 6%, transparent 7%),
+        linear-gradient(180deg, #f4fbff, #bad8ff);
+      border: 6px solid #dbeaff;
+      position: relative;
+      box-shadow: 0 12px 24px rgba(18, 104, 243, .18);
+    }
+
+    .bot::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      top: 23px;
+      height: 27px;
+      border-radius: 14px;
+      background: #0a1f49;
+    }
+
+    .bot::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      top: -10px;
+      width: 8px;
+      height: 14px;
+      border-radius: 8px;
+      background: #0f6df2;
+    }
+
+    .assistant-head h2 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #54647d;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #16bc54;
+    }
+
+    .record-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .record-intro {
+      border: 1px solid #dbe8fa;
+      background: linear-gradient(135deg, #f7fbff, #eef6ff);
+      border-radius: 22px;
+      padding: 18px;
+      color: #30425f;
+      font-weight: 850;
+      line-height: 1.7;
+    }
+
+    .record-intro strong {
+      color: var(--blue);
+    }
+
+    .record-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .record-field {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid #dbe8fa;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .82);
+    }
+
+    .record-field label {
+      color: var(--ink);
+      font-weight: 950;
+      line-height: 1.5;
+    }
+
+    .record-field textarea {
+      width: 100%;
+      min-height: 86px;
+      resize: vertical;
+      border: 1px solid #d7e4f6;
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--ink);
+      font: inherit;
+      line-height: 1.6;
+      background: #fff;
+    }
+
+    .record-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .record-actions button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 14px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .record-actions button.secondary {
+      background: #eef5ff;
+      color: var(--blue);
+      border: 1px solid #d7e5fb;
+    }
+
+    .record-preview {
+      border: 2px dashed #bfd3ef;
+      background: #fbfdff;
+      border-radius: 20px;
+      padding: 16px;
+      color: #40526f;
+      line-height: 1.8;
+      font-weight: 800;
+      white-space: pre-wrap;
+    }
+
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .bubble {
+      border-radius: 20px;
+      padding: 16px 18px;
+      color: #20314f;
+      font-size: 18px;
+      line-height: 1.6;
+      font-weight: 800;
+      max-width: 92%;
+    }
+
+    .bubble.user {
+      align-self: flex-end;
+      background: #dcecff;
+      border-top-right-radius: 8px;
+    }
+
+    .bubble.ai {
+      align-self: flex-start;
+      background: #fff;
+      border: 2px solid #dce8f8;
+      border-top-left-radius: 8px;
+    }
+
+    .mini-axis {
+      margin-top: 14px;
+      padding: 16px;
+      border: 2px solid #e1ebf8;
+      border-radius: 18px;
+      background: #fbfdff;
+    }
+
+    .mini-line {
+      height: 5px;
+      margin: 32px 10px 20px;
+      background: #17213c;
+      position: relative;
+      border-radius: 999px;
+    }
+
+    .mini-line span {
+      position: absolute;
+      top: -13px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .mini-line .m-neg {
+      left: 18%;
+      background: #0f6df2;
+    }
+
+    .mini-line .m-zero {
+      left: 50%;
+      width: 4px;
+      height: 34px;
+      top: -15px;
+      border-radius: 4px;
+      background: #17213c;
+    }
+
+    .mini-line .m-pos {
+      left: 82%;
+      background: #18aa49;
+    }
+
+    .quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 18px 0;
+    }
+
+    .quick button {
+      border: 1px solid #d8e5f6;
+      background: #f6faff;
+      border-radius: 999px;
+      padding: 9px 12px;
+      color: #40526f;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .ai-config {
+      border: 1px solid #dbe8fa;
+      background: #f7fbff;
+      border-radius: 18px;
+      padding: 12px;
+      margin: 0 0 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .ai-config summary {
+      cursor: pointer;
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .ai-config label {
+      display: grid;
+      gap: 5px;
+      color: #53647d;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .ai-config input {
+      border: 1px solid #d7e4f6;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .ai-config button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .ai-config small {
+      color: #6b7b93;
+      line-height: 1.5;
+      font-weight: 800;
+    }
+
+    .ask {
+      display: grid;
+      grid-template-columns: 1fr 54px;
+      gap: 10px;
+      border-top: 1px solid #dce8f7;
+      padding-top: 16px;
+    }
+
+    .ask input {
+      width: 100%;
+      border: 2px solid #dbe7f8;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 17px;
+      outline: 0;
+      color: #263650;
+      font-weight: 800;
+    }
+
+    .ask button {
+      border: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #1c86ff, #075ee8);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(18, 104, 243, .24);
+    }
+
+    .mobile-bar {
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .mobile-bar select {
+      width: 100%;
+      border: 2px solid #cfe0f8;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #fff;
+      color: #17213c;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1120px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .progress-wrap {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        min-height: 520px;
+      }
+    }
+    @media (max-width: 820px) {
+      .record-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .record-field textarea {
+        min-height: 78px;
+      }
+
+      .app {
+        width: min(100vw - 24px, 680px);
+        padding-top: 12px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 30px;
+        line-height: 1.05;
+      }
+
+      .lesson-rail {
+        display: none;
+      }
+
+      .mobile-bar {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .brand {
+        gap: 10px;
+      }
+
+      .flask, .badge {
+        transform: scale(.68);
+        transform-origin: left center;
+      }
+
+      .progress-wrap {
+        min-width: 0;
+        width: 100%;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .progress {
+        height: 12px;
+      }
+
+      .progress-wrap .badge {
+        display: none;
+      }
+
+      .progress-wrap .badge {
+        display: none;
+      }
+
+      .main-card,
+      .side-card {
+        padding: 22px 16px;
+        border-radius: 22px;
+      }
+
+      .task {
+        border-left: 0;
+        padding-left: 0;
+        font-size: 18px;
+      }
+
+      .video-card,
+      .quiz,
+      .result-card,
+      .mistake-grid,
+      .activity-pack,
+      .scenario-grid,
+      .pair-grid,
+      .abs-grid,
+      .move-grid,
+      .challenge-grid,
+      .classify-layout,
+      .card-bank,
+      .bin-board {
+        grid-template-columns: 1fr;
+      }
+
+      .interaction-stage {
+        padding: 16px;
+        min-height: 0;
+      }
+
+      .experiment-title {
+        font-size: 20px;
+      }
+
+      .number-lab {
+        padding: 46px 0 24px;
+      }
+
+      .directions {
+        margin: 0 22px 36px;
+        font-size: 17px;
+      }
+
+      .tick span {
+        font-size: 20px;
+      }
+
+      .result-card {
+        padding: 20px;
+        font-size: 21px;
+      }
+
+      .result-card strong,
+      .result-card b {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="有理数探索实验室">
+        <div class="flask" aria-hidden="true"></div>
+        <h1>有理数探索实验室</h1>
+      </div>
+      <div class="progress-wrap" aria-label="学习进度">
+        <span>学习进度</span>
+        <div class="progress"><span id="progressFill"></span></div>
+        <strong id="progressText">35%</strong>
+        <div class="badge" aria-hidden="true">★</div>
+      </div>
+    </header>
+
+    <nav class="lesson-rail" id="lessonRail" aria-label="课时导航"></nav>
+    <div class="mobile-bar">
+      <select id="lessonSelect" aria-label="选择课时"></select>
+    </div>
+
+    <section class="grid">
+      <article class="panel main-card">
+        <div class="title-row">
+          <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+            <h2 id="lessonHeading">第3课时 数轴</h2>
+            <div class="task" id="lessonTask">拖动点 A，观察它表示的数</div>
+          </div>
+          <button class="reset" id="resetBtn" type="button">重置</button>
+        </div>
+
+        <div class="content-tabs" role="tablist" aria-label="学习模块">
+          <button class="tab active" data-tab="explore" type="button">交互学习</button>
+          <button class="tab" data-tab="video" type="button">视频学习</button>
+          <button class="tab" data-tab="quiz" type="button">小测试题</button>
+          <button class="tab" data-tab="mistake" type="button">错因分析</button>
+          <button class="tab" data-tab="record" type="button">实验记录卡</button>
+        </div>
+
+        <section class="tab-panel active" id="explore">
+          <div class="activity-pack" id="activityPack"></div>
+          <div class="interaction-stage" id="interactionStage"></div>
+          <div class="number-lab" id="numberLab">
+            <div class="directions">
+              <span class="negative">负方向 ←</span>
+              <span class="positive">→ 正方向</span>
+            </div>
+            <div class="origin-label">原点</div>
+            <div class="axis-wrap" id="axisWrap">
+              <div class="axis" aria-hidden="true"></div>
+              <div class="ticks" id="ticks"></div>
+              <button class="point" id="pointA" type="button" aria-label="拖动点 A"></button>
+              <div class="distance" id="distanceMark">3 个单位长度</div>
+            </div>
+            <div class="result-card">
+              <div>观察结果&nbsp;&nbsp;<strong>A = <span id="pointValue">-3</span></strong></div>
+              <div>到原点的距离：<b id="absValue">3</b></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="video">
+          <div class="video-card">
+            <div class="video-screen">
+              <div class="video-lesson">
+                <span class="video-kicker" id="videoKicker">AI 微课 · 03:20</span>
+                <h3 id="videoHeadline">从原点出发，认识数轴</h3>
+                <p id="videoSummary">跟着动画先确定原点、正方向和单位长度，再读出点 A 表示的数。</p>
+              </div>
+              <div class="video-board" id="videoBoard"></div>
+              <div class="video-controls">
+                <div class="video-source-note" id="videoResource"></div>
+              </div>
+            </div>
+            <div class="video-notes">
+              <h3 id="videoTitle">3 分钟微课：数轴三要素</h3>
+              <div class="note-list" id="videoNotes"></div>
+              <div class="video-script" id="videoScript"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="quiz">
+          <div class="quiz">
+            <div class="question-list" id="quizList"></div>
+            <aside class="feedback" id="quizFeedback">一共有 3 道题。点击任意答案，我会即时判断并讲清错因。</aside>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="mistake">
+          <div class="mistake-grid" id="mistakeGrid"></div>
+        </section>
+
+        <section class="tab-panel" id="record">
+          <div class="record-card" id="recordCard"></div>
+        </section>
+      </article>
+
+      <aside class="panel side-card" aria-label="实时答疑">
+        <div>
+          <div class="assistant-head">
+            <div class="bot" aria-hidden="true"></div>
+            <div>
+              <h2>实时答疑</h2>
+              <div class="status" id="aiStatus"><span class="dot"></span>本地讲解模式</div>
+            </div>
+          </div>
+          <div class="quick" id="quickQuestions"></div>
+          <details class="ai-config">
+            <summary>配置真实 AI 助教</summary>
+            <label>base_url
+              <input id="aiBaseUrl" autocomplete="off" placeholder="https://api.openai.com/v1">
+            </label>
+            <label>api_key
+              <input id="aiApiKey" autocomplete="off" type="password" placeholder="sk-...">
+            </label>
+            <label>model
+              <input id="aiModel" autocomplete="off" placeholder="gpt-4o-mini">
+            </label>
+            <button type="button" id="saveAiConfig">保存设置</button>
+            <small>保存后会从本浏览器直接调用 OpenAI 兼容接口；密钥只存于当前浏览器，请勿在公共设备保存。</small>
+          </details>
+        </div>
+
+        <div class="chat" id="chat">
+          <div class="bubble user">我为什么总把 -3 和 3 的位置弄反？</div>
+          <div class="bubble ai">
+            因为你先看了“距离”，但还没判断“方向”。从原点出发，向左是负，向右是正；走 3 个单位到左边，就是 -3。
+            <div class="mini-axis">
+              <div class="mini-line">
+                <span class="m-neg"></span>
+                <span class="m-zero"></span>
+                <span class="m-pos"></span>
+              </div>
+              <strong style="color:#0f6df2;">-3</strong>
+              <span style="margin-left:38%; color:#66758d;">0</span>
+              <strong style="float:right; color:#18aa49;">3</strong>
+            </div>
+          </div>
+        </div>
+
+        <form class="ask" id="askForm">
+          <input id="askInput" autocomplete="off" placeholder="有问题尽管问..." aria-label="输入问题">
+          <button type="submit" aria-label="发送">→</button>
+        </form>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const lessons = [
+      {
+        title: "有理数的意义",
+        task: "把生活中的量变成正数、负数和 0",
+        progress: 12,
+        value: -2,
+        video: ["正数表示比基准多、上升、收入等量。", "负数表示比基准少、下降、支出等量。", "0 不是正数也不是负数，它常常表示基准。"],
+        quiz: { q: "如果水位上升 2 cm 记作 +2 cm，那么下降 5 cm 记作？", options: ["+5 cm", "-5 cm", "0 cm"], answer: 1, why: "同一情境中，方向相反就用相反符号。上升为正，下降就是负，所以是 -5 cm。" },
+        mistakes: ["只看数字大小，忘记正负号表示方向。", "把 0 当成负数或正数。", "没有先确定题目中的基准量。"]
+      },
+      {
+        title: "数的分类",
+        task: "把数字卡片拖入正确的有理数家族",
+        progress: 24,
+        value: 4,
+        video: ["整数和分数统称为有理数。", "有限小数和循环小数都可以化成分数。", "分类时要先看形式，再看能否写成分数。"],
+        quiz: { q: "下列一定属于有理数的是？", options: ["π", "-7", "无限不循环小数"], answer: 1, why: "-7 是整数，整数属于有理数。π 和无限不循环小数不是有理数。" },
+        mistakes: ["看到小数就犹豫，其实有限小数也是有理数。", "把分数只理解成正分数。", "分类时漏掉 0。"]
+      },
+      {
+        title: "数轴",
+        task: "拖动点 A，观察它表示的数",
+        progress: 35,
+        value: -3,
+        video: ["数轴有三要素：原点、正方向、单位长度。", "原点右边表示正数，左边表示负数。", "到原点的距离只看长度，所以 -3 和 3 的距离都是 3。"],
+        quiz: { q: "数轴上点 A 在原点左边 3 个单位处，A 表示的数是？", options: ["3", "-3", "无法确定"], answer: 1, why: "先从原点出发，再判断方向。左边是负方向，走 3 个单位就是 -3。" },
+        mistakes: ["先数距离，忘记判断左右方向。", "单位长度不一致，导致读数偏差。", "把原点当成第一个刻度，而不是 0。"]
+      },
+      {
+        title: "相反数",
+        task: "找到关于原点对称的两个点",
+        progress: 48,
+        value: 5,
+        video: ["只有符号不同的两个数互为相反数。", "a 的相反数是 -a。", "0 的相反数仍然是 0。"],
+        quiz: { q: "-8 的相反数是？", options: ["-8", "8", "1/8"], answer: 1, why: "相反数只改变符号，不改变到原点的距离，所以 -8 的相反数是 8。" },
+        mistakes: ["把相反数和倒数混淆。", "忘记 0 的相反数是 0。", "看到 -a 就一定以为是负数。"]
+      },
+      {
+        title: "绝对值",
+        task: "观察点到原点的距离怎样变化",
+        progress: 60,
+        value: -5,
+        video: ["绝对值表示一个数到原点的距离。", "距离不能为负，所以绝对值非负。", "|-5| = 5，|5| = 5。"],
+        quiz: { q: "|-6| 的值是？", options: ["-6", "6", "0"], answer: 1, why: "绝对值看的是距离，距离没有负数，所以 |-6| = 6。" },
+        mistakes: ["看到负号就保留负号。", "把绝对值理解成去括号。", "忽略绝对值结果一定大于或等于 0。"]
+      },
+      {
+        title: "有理数的大小比较",
+        task: "用数轴判断谁更大",
+        progress: 72,
+        value: 2,
+        video: ["数轴上越往右，数越大。", "正数大于 0，负数小于 0。", "两个负数比较，离原点近的反而大。"],
+        quiz: { q: "比较 -2 和 -5，哪个更大？", options: ["-2", "-5", "一样大"], answer: 0, why: "在数轴上 -2 位于 -5 的右边，所以 -2 更大。" },
+        mistakes: ["两个负数只比较数字部分。", "忘记数轴右边更大。", "把绝对值大的负数当成更大。"]
+      },
+      {
+        title: "数轴的应用",
+        task: "用数轴解释加减中的移动",
+        progress: 84,
+        value: -1,
+        video: ["加正数向右移动。", "加负数向左移动。", "减去一个数可以转化为加它的相反数。"],
+        quiz: { q: "从 -1 出发向右移动 4 个单位，到达哪个数？", options: ["-5", "3", "4"], answer: 1, why: "向右是变大，-1 往右 4 个单位依次到 0、1、2、3。" },
+        mistakes: ["没有从起点开始数。", "把加负数的方向看反。", "移动时把起点也算作一个单位。"]
+      },
+      {
+        title: "综合应用",
+        task: "完成有理数单元闯关",
+        progress: 100,
+        value: 3,
+        video: ["读题先找基准、方向和单位。", "用数轴统一理解相反数、绝对值、大小比较。", "做完后用情境检查答案是否合理。"],
+        quiz: { q: "某地上午气温 -2℃，下午升高 5℃，下午气温是？", options: ["-7℃", "3℃", "5℃"], answer: 1, why: "升高 5℃ 表示在数轴上向右移动 5 个单位，-2 + 5 = 3℃。" },
+        mistakes: ["不会把生活情境转成数学表达。", "正负号和运算符号混在一起。", "答案算出后没有回到题意检查。"]
+      }
+    ];
+
+    let current = 2;
+    let pointValue = lessons[current].value;
+
+    const rail = document.querySelector("#lessonRail");
+    const select = document.querySelector("#lessonSelect");
+    const heading = document.querySelector("#lessonHeading");
+    const task = document.querySelector("#lessonTask");
+    const progressFill = document.querySelector("#progressFill");
+    const progressText = document.querySelector("#progressText");
+    const tabs = [...document.querySelectorAll(".tab")];
+    const panels = [...document.querySelectorAll(".tab-panel")];
+    const ticks = document.querySelector("#ticks");
+    const point = document.querySelector("#pointA");
+    const axisWrap = document.querySelector("#axisWrap");
+    const distanceMark = document.querySelector("#distanceMark");
+    const pointLabel = document.querySelector("#pointValue");
+    const absLabel = document.querySelector("#absValue");
+    const notes = document.querySelector("#videoNotes");
+    const videoHeadline = document.querySelector("#videoHeadline");
+    const videoSummary = document.querySelector("#videoSummary");
+    const videoBoard = document.querySelector("#videoBoard");
+    const videoScript = document.querySelector("#videoScript");
+    const videoResource = document.querySelector("#videoResource");
+    const activityPack = document.querySelector("#activityPack");
+    const interactionStage = document.querySelector("#interactionStage");
+    const numberLab = document.querySelector("#numberLab");
+    const quizList = document.querySelector("#quizList");
+    const quizFeedback = document.querySelector("#quizFeedback");
+    const mistakeGrid = document.querySelector("#mistakeGrid");
+    const recordCard = document.querySelector("#recordCard");
+    const chat = document.querySelector("#chat");
+    const quick = document.querySelector("#quickQuestions");
+    let interactionState = {};
+    const initialLesson = current;
+    const initialChat = chat.innerHTML;
+
+    function initNav() {
+      rail.innerHTML = lessons.map((lesson, index) => `
+        <button class="lesson-step ${index === current ? "active" : ""}" data-index="${index}" type="button">
+          <span class="lesson-num">${index + 1}</span>
+          <span class="lesson-title">${lesson.title}</span>
+        </button>
+      `).join("");
+      select.innerHTML = lessons.map((lesson, index) => `<option value="${index}">第${index + 1}课时 ${lesson.title}</option>`).join("");
+      select.value = current;
+    }
+
+    function initTicks() {
+      const values = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+      ticks.innerHTML = values.map(v => {
+        const left = ((v + 6) / 12) * 100;
+        return `<div class="tick" style="left:${left}%"><span>${v}</span></div>`;
+      }).join("");
+    }
+
+    function getVideoScene(lesson, index) {
+      const scenes = [
+        ["生活基准", "先找“以谁为 0”。", "方向建模", "多用正号，少用负号。", "符号表达", "收入 +12，支出 -8。", "视频脚本：先展示电梯、温度计、收支表三个场景，让学生发现同一个数字在不同方向下意义不同。最后用“基准、方向、数值”三步写出正负数。"],
+        ["分类树", "有理数可分为整数和分数。", "特殊成员", "0 是整数，也是有理数。", "判断方法", "能写成分数就是有理数。", "视频脚本：从一张数字卡片墙开始，把 -3、0、1/2、0.25、π 拖入分类树，强调有限小数和循环小数也能化成分数。"],
+        ["三要素", "原点、正方向、单位长度缺一不可。", "读点", "从 0 出发先看左右。", "距离", "-3 和 3 到 0 都是 3。", "视频脚本：先搭建空白直线，再依次放入原点、箭头、刻度。点 A 从 0 向左移动 3 格，读出 -3，并解释距离是 3。"],
+        ["对称", "相反数在数轴上关于 0 对称。", "符号", "只变符号，不变距离。", "特例", "0 的相反数还是 0。", "视频脚本：用镜面对称动画展示 5 和 -5，说明它们距离相等、方向相反；最后讨论 0 为什么没有“另一边”。"],
+        ["距离", "绝对值表示到原点的距离。", "非负", "距离没有负数。", "符号", "负数的绝对值会变成正数。", "视频脚本：用尺子量点到原点的距离，比较 |-5| 和 |5|，让学生看到绝对值不是简单去括号，而是在读距离。"],
+        ["位置", "数轴上越往右越大。", "负数比较", "离 0 越近，负数越大。", "策略", "不确定就画数轴。", "视频脚本：让 -6、-2、0、3 排队，右边的更大。重点慢放 -6 和 -2，纠正“数字部分大就更大”的误区。"],
+        ["移动", "加正数向右移动。", "反向", "加负数向左移动。", "检查", "移动后回到数轴读终点。", "视频脚本：用小车从 -1 出发，向右走 4 格到 3，再向左走 5 格到 -2，建立加减运算和移动的联系。"],
+        ["整合", "先找基准、方向、单位。", "工具", "用数轴统一理解本单元。", "验算", "答案要回到情境里检查。", "视频脚本：用气温变化、海拔高度、账户收支三个综合题串联全单元，要求每题都写出“基准、方向、数轴、答案”。"]
+      ];
+      const scene = scenes[index];
+      return {
+        headline: `第${index + 1}课时：${lesson.title}微课讲解`,
+        summary: `本节用“观察、操作、追问”三步带学生理解：${lesson.video[0]}`,
+        board: [
+          { label: scene[0], text: scene[1] },
+          { label: scene[2], text: scene[3] },
+          { label: scene[4], text: scene[5] }
+        ],
+        script: scene[6]
+      };
+    }
+
+    function getVideoResource(index) {
+      const resources = [
+        {
+          provider: "Khan Academy",
+          title: "Negative numbers introduction",
+          url: "https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-negative-number-topic",
+          note: "用于补充正数、负数与生活情境中的方向意义。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Rational and irrational numbers",
+          url: "https://www.khanacademy.org/math/algebra-basics/alg-basics-foundations/alg-basics-rational-irrational-numbers",
+          note: "用于补充分数、有限小数、循环小数与有理数分类。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Negative numbers on the number line",
+          url: "https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-negative-number-topic",
+          note: "用于补充原点、正方向、单位长度与数轴读数。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Opposite numbers and distance from zero",
+          url: "https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-negative-number-topic",
+          note: "用于补充关于 0 对称、相反数与距离不变。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Absolute value and distance",
+          url: "https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-negative-number-topic",
+          note: "用于补充绝对值是到原点的距离。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Comparing negative numbers",
+          url: "https://www.khanacademy.org/math/cc-sixth-grade-math/cc-6th-negative-number-topic",
+          note: "用于补充数轴上越往右数越大、两个负数的比较。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Adding and subtracting negative numbers",
+          url: "https://www.khanacademy.org/math/cc-seventh-grade-math/cc-7th-negative-numbers-add-and-subtract",
+          note: "用于补充加减法在数轴上的左右移动。"
+        },
+        {
+          provider: "Khan Academy",
+          title: "Negative numbers: unit review",
+          url: "https://www.khanacademy.org/math/cc-seventh-grade-math/cc-7th-negative-numbers-add-and-subtract",
+          note: "用于综合复习负数、数轴移动和应用题。"
+        }
+      ];
+      return resources[index];
+    }
+
+    function getActivity(index) {
+      const data = [
+        ["情境卡片", "把“水位上升、支出、海拔低于海平面”分别写成带符号的数。", "先圈出基准量，再判断方向。", ["温度计", "收支表", "海拔图"]],
+        ["分类实验", "把 -4、0、2/3、0.8、π 放进整数、分数、有理数区域。", "有限小数 0.8 可以写成 4/5。", ["整数", "分数", "有理数"]],
+        ["数轴实验", "拖动点 A，观察它在原点左右两侧表示的数和到原点的距离。", "读数先看方向，距离只看长度。", ["原点", "正方向", "单位长度"]],
+        ["镜像实验", "给出一个点，找出它关于原点对称的位置，读出相反数。", "相反数只变符号，距离不变。", ["5 与 -5", "a 与 -a", "0"]],
+        ["测距实验", "观察点 A 到原点的距离，判断绝对值结果是否可能为负。", "绝对值表示距离，结果一定非负。", ["|-6|", "|0|", "|4|"]],
+        ["排队实验", "把一组有理数从小到大排在数轴上。", "数轴上越往右越大，负数比较不能只看数字部分。", ["-6", "-2", "3"]],
+        ["移动实验", "从起点出发，按加减运算在数轴上移动并读出终点。", "加正向右，加负向左；减法可转化为加相反数。", ["-1+4", "2+(-5)", "3-6"]],
+        ["闯关实验", "综合判断正负意义、相反数、绝对值、大小比较和数轴移动。", "每题都按“基准、方向、数轴、验算”完成。", ["情境题", "数轴题", "综合题"]]
+      ];
+      const item = data[index];
+      return { title: item[0], task: item[1], tip: item[2], tags: item[3] };
+    }
+
+    function getQuizzes(lesson, index) {
+      const extra = [
+        [
+          { q: "温度比 0℃ 低 4℃，通常记作？", options: ["+4℃", "-4℃", "4 米"], answer: 1, why: "低于基准 0℃，方向是负方向，所以记作 -4℃。" },
+          { q: "下列说法正确的是？", options: ["0 是正数", "0 是负数", "0 是正负数的分界点"], answer: 2, why: "0 不是正数也不是负数，它常用来表示基准或分界。" }
+        ],
+        [
+          { q: "下列属于整数的是？", options: ["-3", "1/2", "0.25"], answer: 0, why: "-3 是负整数；分数和有限小数虽是有理数，但不是整数。" },
+          { q: "0.5 属于有理数吗？", options: ["属于", "不属于", "无法判断"], answer: 0, why: "0.5 可以写成 1/2，所以它是有理数。" }
+        ],
+        [
+          { q: "数轴上 0 右边 4 个单位的点表示？", options: ["-4", "4", "0"], answer: 1, why: "右边是正方向，离 0 四个单位就是 4。" },
+          { q: "数轴必须具备的三要素不包括？", options: ["原点", "单位长度", "颜色"], answer: 2, why: "数轴三要素是原点、正方向、单位长度，颜色不是必需条件。" }
+        ],
+        [
+          { q: "5 和 -5 的关系是？", options: ["互为相反数", "互为倒数", "相等"], answer: 0, why: "它们只有符号不同，且到原点距离相等，所以互为相反数。" },
+          { q: "0 的相反数是？", options: ["0", "1", "-1"], answer: 0, why: "0 的相反数仍然是 0，这是相反数里的特殊点。" }
+        ],
+        [
+          { q: "|3| 的值是？", options: ["3", "-3", "0"], answer: 0, why: "3 到原点的距离是 3，所以 |3| = 3。" },
+          { q: "绝对值的结果一定？", options: ["小于 0", "等于 0", "大于或等于 0"], answer: 2, why: "绝对值表示距离，距离一定是非负数。" }
+        ],
+        [
+          { q: "在数轴上，-6 和 -1 哪个更大？", options: ["-6", "-1", "一样大"], answer: 1, why: "-1 在 -6 的右边，所以 -1 更大。" },
+          { q: "比较两个负数时，常用的安全方法是？", options: ["只看数字部分", "画数轴看左右", "谁绝对值大谁大"], answer: 1, why: "两个负数容易看反，画数轴看谁在右边最稳。" }
+        ],
+        [
+          { q: "从 2 出发向左移动 5 个单位，到达？", options: ["7", "-3", "3"], answer: 1, why: "向左表示变小，2 - 5 = -3。" },
+          { q: "加上一个负数，在数轴上通常表示？", options: ["向右移动", "向左移动", "不移动"], answer: 1, why: "加负数就是往负方向移动，也就是向左移动。" }
+        ],
+        [
+          { q: "-4 的相反数与 |-4| 分别是？", options: ["4，4", "-4，4", "4，-4"], answer: 0, why: "-4 的相反数是 4，|-4| 表示距离，也是 4。" },
+          { q: "解决有理数情境题，第一步通常是？", options: ["先猜答案", "找基准和方向", "只看数字大小"], answer: 1, why: "先找基准和方向，才能正确使用正负号。" }
+        ]
+      ];
+      return [lesson.quiz, ...extra[index]];
+    }
+
+    function renderInteraction(index) {
+      interactionState = { selectedCard: null, sort: [] };
+      numberLab.hidden = index !== 2;
+      interactionStage.hidden = index === 2;
+      if (index === 2) {
+        interactionStage.innerHTML = "";
+        requestAnimationFrame(() => updatePoint(pointValue));
+        return;
+      }
+
+      const views = [
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">情境符号实验 <span>点击每张卡片中的正确符号</span></div>
+            <div class="scenario-grid">
+              ${[
+                ["水位上升 3 cm", "+3", "上升比基准高，用正数。"],
+                ["支出 12 元", "-12", "支出与收入方向相反，用负数。"],
+                ["气温正好 0℃", "0", "0 表示基准，不是正数也不是负数。"]
+              ].map((item, i) => `
+                <article class="scenario-card" data-scenario="${i}">
+                  <h3>${item[0]}</h3>
+                  <p>应该怎样记录？</p>
+                  <div class="choice-row">
+                    ${["+3", "-12", "0"].map(choice => `<button type="button" data-sign="${choice}" data-right="${item[1]}" data-why="${item[2]}">${choice}</button>`).join("")}
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            <div class="lab-feedback" id="interactionFeedback">提示：先找基准，再看“多/少、上升/下降、收入/支出”的方向。</div>
+          </div>
+        `,
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">分类实验 <span>先点数字卡片，再点它所属的家族</span></div>
+            <div class="classify-layout">
+              <div class="card-bank">
+                ${[
+                  ["-4", "integer", "整数也是有理数，这里先归入整数。"],
+                  ["0", "integer", "0 是整数，也是有理数。"],
+                  ["2/3", "fraction", "2/3 是分数，当然是有理数。"],
+                  ["0.8", "fraction", "0.8 = 4/5，是有限小数，可以归入分数类理解。"],
+                  ["π", "irrational", "π 是无限不循环小数，不属于有理数。"]
+                ].map(item => `<button class="number-card" type="button" data-class-card="${item[0]}" data-family="${item[1]}" data-why="${item[2]}">${item[0]}</button>`).join("")}
+              </div>
+              <div class="bin-board">
+                <button class="class-bin" type="button" data-bin="integer">整数 <small>如 -4、0、8</small></button>
+                <button class="class-bin" type="button" data-bin="fraction">分数/有限小数 <small>如 2/3、0.8</small></button>
+                <button class="class-bin" type="button" data-bin="irrational">不是有理数 <small>如 π</small></button>
+                <button class="class-bin" type="button" data-bin="rational">有理数总家族 <small>整数和分数都属于它</small></button>
+              </div>
+            </div>
+            <div class="lab-feedback" id="interactionFeedback">提示：有限小数可以化成分数；π 不能写成两个整数的比。</div>
+          </div>
+        `,
+        "",
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">相反数镜像实验 <span>点击一个数，观察关于 0 的对称点</span></div>
+            <div class="pair-grid">
+              ${[-6, -2, 0, 4, 5, 8].map(v => `<button class="pair-card" type="button" data-opposite="${v}"><h3>${v}</h3><p>点击找相反数</p></button>`).join("")}
+            </div>
+            <div class="mirror-board">
+              <div class="mirror-line" id="mirrorLine"></div>
+              <div class="lab-feedback" id="interactionFeedback">提示：相反数只改变符号，到 0 的距离不变。</div>
+            </div>
+          </div>
+        `,
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">绝对值测距实验 <span>点击一个数，用尺子量它到 0 的距离</span></div>
+            <div class="abs-grid">
+              ${[-5, -1, 0, 3, 6, -8].map(v => `<button class="abs-card" type="button" data-abs="${v}"><h3>${v}</h3><p>测量 |${v}|</p></button>`).join("")}
+            </div>
+            <div class="abs-meter">
+              <div class="abs-line" id="absLine"></div>
+              <div class="abs-value" id="absResult">选择一个数</div>
+              <div class="lab-feedback" id="interactionFeedback">提示：绝对值表示距离，结果不能是负数。</div>
+            </div>
+          </div>
+        `,
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">大小排序实验 <span>按从小到大点击数字</span></div>
+            <div class="sort-board">
+              <div class="sort-pool">
+                ${[-6, -2, -5, 0, 3, 1].map(v => `<button class="sort-number" type="button" data-sort="${v}">${v}</button>`).join("")}
+              </div>
+              <div class="sort-result" id="sortResult">你的排序会出现在这里</div>
+            </div>
+            <div class="lab-feedback" id="interactionFeedback">提示：数轴上越往右越大，两个负数不要只看数字部分。</div>
+          </div>
+        `,
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">数轴移动实验 <span>选择正确的终点</span></div>
+            <div class="move-grid">
+              ${[
+                ["从 -1 出发，向右 4 格", "-1", "3", "-1 + 4 = 3"],
+                ["从 2 出发，向左 5 格", "2", "-3", "2 + (-5) = -3"],
+                ["从 3 出发，减去 6", "3", "-3", "3 - 6 = -3"]
+              ].map((item, i) => `
+                <article class="move-card">
+                  <h3>任务 ${i + 1}</h3>
+                  <p>${item[0]}</p>
+                  <div class="choice-row">
+                    ${["-3", "3", "7"].map(choice => `<button class="move-button" type="button" data-move="${choice}" data-start="${item[1]}" data-right="${item[2]}" data-why="${item[3]}">${choice}</button>`).join("")}
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            <div class="move-board">
+              <div class="move-line" id="moveLine"></div>
+              <div class="lab-feedback" id="interactionFeedback">提示：向右变大，向左变小；减法可以看成反方向移动。</div>
+            </div>
+          </div>
+        `,
+        `
+          <div class="experiment-board">
+            <div class="experiment-title">综合闯关实验 <span>每题先判断知识点，再选答案</span></div>
+            <div class="challenge-grid">
+              ${[
+                ["海拔低于海平面 20 米，记作？", "-20", ["+20", "-20", "0"]],
+                ["-7 的相反数是？", "7", ["-7", "7", "1/7"]],
+                ["|-9| 和 -3 谁更大？", "|-9|", ["|-9|", "-3", "一样大"]]
+              ].map((item, i) => `
+                <article class="challenge-card">
+                  <h3>闯关 ${i + 1}</h3>
+                  <p>${item[0]}</p>
+                  <div class="choice-row">
+                    ${item[2].map(choice => `<button class="challenge-option" type="button" data-challenge="${choice}" data-right="${item[1]}">${choice}</button>`).join("")}
+                  </div>
+                </article>
+              `).join("")}
+            </div>
+            <div class="lab-feedback" id="interactionFeedback">提示：综合题按“基准、方向、数轴、验算”四步走。</div>
+          </div>
+        `
+      ];
+      interactionStage.innerHTML = views[index];
+    }
+
+    function valueToLeft(value) {
+      const ticksBox = ticks.getBoundingClientRect();
+      const axisBox = axisWrap.getBoundingClientRect();
+      return (ticksBox.left - axisBox.left) + ((value + 6) / 12) * ticksBox.width;
+    }
+
+    function leftToValue(clientX) {
+      const ticksBox = ticks.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (clientX - ticksBox.left) / ticksBox.width));
+      return Math.round(ratio * 12 - 6);
+    }
+
+    function updatePoint(value) {
+      pointValue = Math.max(-6, Math.min(6, value));
+      const left = valueToLeft(pointValue);
+      point.style.left = `${left}px`;
+      pointLabel.textContent = pointValue;
+      absLabel.textContent = Math.abs(pointValue);
+
+      const origin = valueToLeft(0);
+      const distance = Math.abs(left - origin);
+      distanceMark.style.width = `${distance}px`;
+      distanceMark.style.left = `${Math.min(left, origin)}px`;
+      distanceMark.style.transform = "none";
+      distanceMark.textContent = `${Math.abs(pointValue)} 个单位长度`;
+    }
+
+    function recordStorageKey() {
+      return "mathLabRecord:" + document.title + ":lesson-" + current;
+    }
+
+    function safeRecordJson(value) {
+      try {
+        return JSON.parse(value || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function getRecordPrompts(lesson) {
+      const operation = lesson.task || (lesson.activity && lesson.activity[1]) || (lesson.video && lesson.video[0]) || lesson.title;
+      const firstVideo = (lesson.video && lesson.video[0]) || lesson.title;
+      return {
+        guess: "我觉得改变“" + operation + "”中的一个条件，会导致结论发生变化。",
+        observation: "我实际观察到：" + firstVideo,
+        example: "写一个符合本课条件的具体例子，并说明它为什么符合。",
+        counterexample: "找一个反例或特殊情况：它看起来相似，但不符合某个关键条件。",
+        conclusion: "我现在的结论：判断“" + lesson.title + "”时，必须先检查条件，再下结论。",
+        question: "我还想问：这个结论在什么情况下会失效？"
+      };
+    }
+
+    function collectRecord() {
+      const data = {};
+      recordCard.querySelectorAll("[data-record-field]").forEach(field => {
+        data[field.dataset.recordField] = field.value.trim();
+      });
+      return data;
+    }
+
+    function buildRecordText(data = collectRecord()) {
+      const lesson = lessons[current];
+      const topic = document.querySelector("h1")?.textContent.trim() || document.title;
+      return [
+        "《数学实验记录卡》",
+        "专题：" + topic,
+        "课时：第" + (current + 1) + "课时 " + lesson.title,
+        "",
+        "我操作前的猜想：" + (data.guess || "____"),
+        "我实际观察到：" + (data.observation || "____"),
+        "我找到的一个例子：" + (data.example || "____"),
+        "我找到的一个反例或特殊情况：" + (data.counterexample || "____"),
+        "我现在的结论：" + (data.conclusion || "____"),
+        "我还想问的问题：" + (data.question || "____"),
+        "",
+        "AI使用声明：AI可以帮我找反例线索，但真实操作、观察前猜想、反例是否符合条件和最后结论由我自己确认。"
+      ].join("\n");
+    }
+
+    function renderRecordPreview() {
+      const preview = recordCard.querySelector("#recordPreview");
+      if (preview) preview.textContent = buildRecordText();
+    }
+
+    function saveRecord(showMessage = false) {
+      localStorage.setItem(recordStorageKey(), JSON.stringify(collectRecord()));
+      if (showMessage) renderRecordPreview();
+    }
+
+    function downloadRecord() {
+      const blob = new Blob([buildRecordText()], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "数学实验记录卡-第" + (current + 1) + "课时-" + lessons[current].title + ".txt";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function escapeRecordValue(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderRecordCard() {
+      const lesson = lessons[current];
+      const prompts = getRecordPrompts(lesson);
+      const saved = safeRecordJson(localStorage.getItem(recordStorageKey()));
+      const value = field => saved[field] || "";
+      recordCard.innerHTML = [
+        '<div class="record-intro"><strong>猜想 → 验证 → 反例 → 结论</strong><br>先写操作前猜想，再完成交互实验和小测试。反例可以请 AI 帮忙找线索，但你必须自己判断它是否符合实验条件。</div>',
+        '<div class="record-grid">',
+        '<div class="record-field"><label>我操作前的猜想：我觉得改变____会导致____。</label><textarea data-record-field="guess" placeholder="' + escapeRecordValue(prompts.guess) + '">' + escapeRecordValue(value("guess")) + '</textarea></div>',
+        '<div class="record-field"><label>我实际观察到：</label><textarea data-record-field="observation" placeholder="' + escapeRecordValue(prompts.observation) + '">' + escapeRecordValue(value("observation")) + '</textarea></div>',
+        '<div class="record-field"><label>我找到的一个例子：</label><textarea data-record-field="example" placeholder="' + escapeRecordValue(prompts.example) + '">' + escapeRecordValue(value("example")) + '</textarea></div>',
+        '<div class="record-field"><label>我找到的一个反例或特殊情况：</label><textarea data-record-field="counterexample" placeholder="' + escapeRecordValue(prompts.counterexample) + '">' + escapeRecordValue(value("counterexample")) + '</textarea></div>',
+        '<div class="record-field"><label>我现在的结论：</label><textarea data-record-field="conclusion" placeholder="' + escapeRecordValue(prompts.conclusion) + '">' + escapeRecordValue(value("conclusion")) + '</textarea></div>',
+        '<div class="record-field"><label>我还想问的问题：</label><textarea data-record-field="question" placeholder="' + escapeRecordValue(prompts.question) + '">' + escapeRecordValue(value("question")) + '</textarea></div>',
+        '</div>',
+        '<div class="record-actions">',
+        '<button type="button" data-record-action="save">保存记录</button>',
+        '<button class="secondary" type="button" data-record-action="preview">生成记录卡</button>',
+        '<button class="secondary" type="button" data-record-action="download">下载记录卡</button>',
+        '<button class="secondary" type="button" data-record-action="counterexample">请 AI 给我反例线索</button>',
+        '<button class="secondary" type="button" data-record-action="clear">清空本课记录</button>',
+        '</div>',
+        '<div class="record-preview" id="recordPreview">点击“生成记录卡”，这里会整理成可提交的《数学实验记录卡》。</div>'
+      ].join("");
+    }
+
+
+    function renderLesson(index) {
+      current = Number(index);
+      const lesson = lessons[current];
+      pointValue = lesson.value;
+      heading.textContent = `第${current + 1}课时 ${lesson.title}`;
+      task.textContent = lesson.task;
+      progressFill.style.width = `${lesson.progress}%`;
+      progressText.textContent = `${lesson.progress}%`;
+      select.value = current;
+
+      document.querySelectorAll(".lesson-step").forEach((btn, i) => btn.classList.toggle("active", i === current));
+      const videoScene = getVideoScene(lesson, current);
+      const resource = getVideoResource(current);
+      const activity = getActivity(current);
+      activityPack.innerHTML = `
+        <div class="activity-card">
+          <h3>${activity.title}</h3>
+          <p><strong>本课操作：</strong>${activity.task}</p>
+          <div class="activity-tags">${activity.tags.map(tag => `<span>${tag}</span>`).join("")}</div>
+        </div>
+        <div class="activity-card">
+          <h3>学习提示</h3>
+          <p>${activity.tip}</p>
+          <p><strong>本课目标：</strong>${lesson.video[0]}</p>
+        </div>
+      `;
+      videoHeadline.textContent = videoScene.headline;
+      videoSummary.textContent = videoScene.summary;
+      videoBoard.innerHTML = videoScene.board.map(item => `<div><strong>${item.label}</strong>${item.text}</div>`).join("");
+      videoScript.innerHTML = `<strong>微课讲稿：</strong>${videoScene.script}`;
+      videoResource.innerHTML = `
+        <strong>公开视频资源：</strong>${resource.provider} · ${resource.title}<br>
+        ${resource.note}<br>
+        <a href="${resource.url}" target="_blank" rel="noopener">打开官方学习视频</a>
+      `;
+      notes.innerHTML = lesson.video.map(item => `<div>${item}</div>`).join("");
+      document.querySelector("#videoTitle").textContent = `3 分钟微课：${lesson.title}`;
+      quizFeedback.textContent = "一共有 3 道题。点击任意答案，我会即时判断并讲清错因。";
+      quizList.innerHTML = getQuizzes(lesson, current).map((quiz, qIndex) => `
+        <div class="question" data-question="${qIndex}">
+          <h3>第 ${qIndex + 1} 题 <span>${qIndex === 0 ? "基础" : qIndex === 1 ? "理解" : "应用"}</span></h3>
+          <p>${quiz.q}</p>
+          <div class="options">
+            ${quiz.options.map((option, i) => `<button class="option" data-question="${qIndex}" data-answer="${i}" type="button">${option}</button>`).join("")}
+          </div>
+        </div>
+      `).join("");
+      mistakeGrid.innerHTML = lesson.mistakes.map((m, i) => `
+        <article class="mistake">
+          <h3>错因 ${i + 1}</h3>
+          <p>${m}</p>
+          <p><strong>改正策略：</strong>${i === 0 ? "先画数轴或标方向，再计算。" : i === 1 ? "用一句定义检查自己的答案。" : "做完后回到题目情境验算。"}</p>
+        </article>
+      `).join("");
+      renderRecordCard();
+      quick.innerHTML = ["这题怎么想？", "为什么要看方向？", "帮我举个例子"].map(q => `<button type="button">${q}</button>`).join("");
+      renderInteraction(current);
+
+      if (current === 2) requestAnimationFrame(() => updatePoint(pointValue));
+    }
+
+    function activateTab(tabName) {
+      tabs.forEach(t => t.classList.toggle("active", t.dataset.tab === tabName));
+      panels.forEach(p => p.classList.toggle("active", p.id === tabName));
+      if (current === 2) requestAnimationFrame(() => updatePoint(pointValue));
+    }
+
+    function resetPage() {
+      chat.innerHTML = initialChat;
+      renderLesson(initialLesson);
+      activateTab("explore");
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+    });
+
+    rail.addEventListener("click", event => {
+      const btn = event.target.closest(".lesson-step");
+      if (btn) renderLesson(btn.dataset.index);
+    });
+
+    select.addEventListener("change", event => renderLesson(event.target.value));
+    document.querySelector("#resetBtn").addEventListener("click", resetPage);
+    window.addEventListener("resize", () => {
+      if (current === 2) updatePoint(pointValue);
+    });
+
+    let dragging = false;
+    point.addEventListener("pointerdown", event => {
+      dragging = true;
+      point.setPointerCapture(event.pointerId);
+      point.style.cursor = "grabbing";
+    });
+    point.addEventListener("pointermove", event => {
+      if (dragging) updatePoint(leftToValue(event.clientX));
+    });
+    point.addEventListener("pointerup", () => {
+      dragging = false;
+      point.style.cursor = "grab";
+    });
+
+    function scaledLeft(value) {
+      return `${((Number(value) + 8) / 16) * 100}%`;
+    }
+
+    function setInteractionFeedback(message) {
+      const box = document.querySelector("#interactionFeedback");
+      if (box) box.innerHTML = message;
+    }
+
+    interactionStage.addEventListener("click", event => {
+      const signBtn = event.target.closest("[data-sign]");
+      if (signBtn) {
+        const isRight = signBtn.dataset.sign === signBtn.dataset.right;
+        signBtn.closest(".scenario-card").querySelectorAll("button").forEach(btn => btn.classList.remove("correct", "wrong"));
+        signBtn.classList.add(isRight ? "correct" : "wrong");
+        setInteractionFeedback(isRight ? `判断正确：${signBtn.dataset.why}` : `再想一步：先判断方向。正确记录应为 ${signBtn.dataset.right}。${signBtn.dataset.why}`);
+        return;
+      }
+
+      const card = event.target.closest("[data-class-card]");
+      if (card) {
+        interactionState.selectedCard = card;
+        document.querySelectorAll("[data-class-card]").forEach(item => item.classList.remove("selected"));
+        card.classList.add("selected");
+        setInteractionFeedback(`已选择 ${card.dataset.classCard}。现在点击它最合适的分类区域。`);
+        return;
+      }
+
+      const bin = event.target.closest("[data-bin]");
+      if (bin) {
+        const selected = interactionState.selectedCard;
+        if (!selected) {
+          setInteractionFeedback("请先点一张数字卡片，再选择分类区域。");
+          return;
+        }
+        const family = selected.dataset.family;
+        const target = bin.dataset.bin;
+        const isRight = target === family || (target === "rational" && ["integer", "fraction"].includes(family));
+        document.querySelectorAll("[data-bin]").forEach(item => item.classList.remove("correct", "wrong"));
+        bin.classList.add(isRight ? "correct" : "wrong");
+        setInteractionFeedback(isRight ? `分类正确：${selected.dataset.why}` : `${selected.dataset.classCard} 放这里不合适。${selected.dataset.why}`);
+        return;
+      }
+
+      const opposite = event.target.closest("[data-opposite]");
+      if (opposite) {
+        const value = Number(opposite.dataset.opposite);
+        const partner = -value;
+        const line = document.querySelector("#mirrorLine");
+        line.innerHTML = `
+          <span class="mirror-dot" style="left:${scaledLeft(value)}">${value}</span>
+          <span class="mirror-dot partner" style="left:${scaledLeft(partner)}">${partner}</span>
+        `;
+        setInteractionFeedback(`${value} 的相反数是 ${partner}。两个点关于 0 对称，到 0 的距离相同。`);
+        return;
+      }
+
+      const abs = event.target.closest("[data-abs]");
+      if (abs) {
+        const value = Number(abs.dataset.abs);
+        const result = Math.abs(value);
+        const line = document.querySelector("#absLine");
+        line.innerHTML = `<span class="abs-dot" style="left:${scaledLeft(value)}">${value}</span><span class="abs-dot partner" style="left:50%">0</span>`;
+        document.querySelector("#absResult").textContent = `|${value}| = ${result}`;
+        setInteractionFeedback(`${value} 到 0 的距离是 ${result} 个单位，所以绝对值是 ${result}。`);
+        return;
+      }
+
+      const sort = event.target.closest("[data-sort]");
+      if (sort) {
+        const value = Number(sort.dataset.sort);
+        if (interactionState.sort.includes(value)) return;
+        interactionState.sort.push(value);
+        sort.classList.add("used");
+        const result = document.querySelector("#sortResult");
+        result.innerHTML = interactionState.sort.map(v => `<span class="sort-chip">${v}</span>`).join("");
+        const target = [-6, -5, -2, 0, 1, 3];
+        const done = interactionState.sort.length === target.length;
+        const okSoFar = interactionState.sort.every((v, i) => v === target[i]);
+        if (done) {
+          setInteractionFeedback(okSoFar ? "排序正确：-6 < -5 < -2 < 0 < 1 < 3。" : "顺序有误。正确顺序是 -6 < -5 < -2 < 0 < 1 < 3。点击重置可以再试。");
+        } else {
+          setInteractionFeedback(okSoFar ? "目前顺序正确，继续选择右边更大的数。" : "这里开始偏了。想想数轴上谁更靠左，必要时点重置再来。");
+        }
+        return;
+      }
+
+      const move = event.target.closest("[data-move]");
+      if (move) {
+        const isRight = move.dataset.move === move.dataset.right;
+        move.closest(".move-card").querySelectorAll("button").forEach(btn => btn.classList.remove("correct", "wrong"));
+        move.classList.add(isRight ? "correct" : "wrong");
+        const line = document.querySelector("#moveLine");
+        line.innerHTML = `<span class="move-dot" style="left:${scaledLeft(move.dataset.start)}">${move.dataset.start}</span><span class="move-dot end" style="left:${scaledLeft(move.dataset.right)}">${move.dataset.right}</span>`;
+        setInteractionFeedback(isRight ? `终点正确：${move.dataset.why}。` : `终点不是 ${move.dataset.move}。${move.dataset.why}，所以应到 ${move.dataset.right}。`);
+        return;
+      }
+
+      const challenge = event.target.closest("[data-challenge]");
+      if (challenge) {
+        const isRight = challenge.dataset.challenge === challenge.dataset.right;
+        challenge.closest(".challenge-card").querySelectorAll("button").forEach(btn => btn.classList.remove("correct", "wrong"));
+        challenge.classList.add(isRight ? "correct" : "wrong");
+        setInteractionFeedback(isRight ? "闯关正确。继续保持“先判断知识点，再写答案”的节奏。" : `这题再回到概念检查：正确答案是 ${challenge.dataset.right}。`);
+      }
+    });
+
+    recordCard.addEventListener("input", event => {
+      if (event.target.matches("[data-record-field]")) saveRecord(false);
+    });
+
+    recordCard.addEventListener("click", event => {
+      const btn = event.target.closest("[data-record-action]");
+      if (!btn) return;
+      const action = btn.dataset.recordAction;
+      if (action === "save") {
+        saveRecord(true);
+      }
+      if (action === "preview") {
+        saveRecord(false);
+        renderRecordPreview();
+      }
+      if (action === "download") {
+        saveRecord(false);
+        downloadRecord();
+      }
+      if (action === "clear") {
+        localStorage.removeItem(recordStorageKey());
+        renderRecordCard();
+      }
+      if (action === "counterexample") {
+        const lesson = lessons[current];
+        const prompt = "请帮我为“第" + (current + 1) + "课时 " + lesson.title + "”找一个反例或特殊情况线索，并提醒我怎样判断它是否符合实验条件。";
+        addBubble(prompt, "user");
+        answerQuestion(prompt);
+      }
+    });
+
+
+    quizList.addEventListener("click", event => {
+      const option = event.target.closest(".option");
+      if (!option) return;
+      const questionIndex = Number(option.dataset.question);
+      const quiz = getQuizzes(lessons[current], current)[questionIndex];
+      const answer = quiz.answer;
+      const questionCard = option.closest(".question");
+      questionCard.querySelectorAll(".option").forEach(btn => {
+        btn.classList.remove("correct", "wrong");
+        if (Number(btn.dataset.answer) === answer) btn.classList.add("correct");
+      });
+      if (Number(option.dataset.answer) !== answer) option.classList.add("wrong");
+      quizFeedback.innerHTML = `<strong>第 ${questionIndex + 1} 题：${Number(option.dataset.answer) === answer ? "答对了。" : "这里容易出错。"}</strong><br>${quiz.why}`;
+    });
+
+    function replyFor(text) {
+      const lesson = lessons[current];
+      if (/反例|特殊|counterexample/i.test(text)) return `可以找一个“看起来像但缺少关键条件”的情况：比如数轴上只标了点却没有统一单位长度，就不能可靠读数。你要先判断它是否满足“原点、正方向、单位长度”这些条件，再决定能不能作为反例。`;
+      if (/方向|左右|正负|negative|direction|sign|left|right/i.test(text)) return `先从原点看方向：右边是正，左边是负。本课“${lesson.title}”最关键的一步，就是先判方向，再数单位长度。`;
+      if (/例子|举例/.test(text)) return `举个生活例子：海拔高于海平面 3 米记作 +3 米，低于海平面 3 米记作 -3 米。数字部分一样，但方向相反。`;
+      if (/错|不会|为什么/.test(text)) return `你的卡点很可能是：${lesson.mistakes[0]}。建议按“找基准、判方向、数单位、写符号”四步走。`;
+      return `围绕“${lesson.title}”，可以先抓住这句：${lesson.video[0]} 你也可以切到小测试，我会根据答案给你分析错因。`;
+    }
+
+    function addBubble(text, who) {
+      const div = document.createElement("div");
+      div.className = `bubble ${who}`;
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    const askForm = document.querySelector("#askForm");
+    const askInput = document.querySelector("#askInput");
+    const aiStatus = document.querySelector("#aiStatus");
+    const aiBaseUrl = document.querySelector("#aiBaseUrl");
+    const aiApiKey = document.querySelector("#aiApiKey");
+    const aiModel = document.querySelector("#aiModel");
+    const saveAiConfig = document.querySelector("#saveAiConfig");
+    const aiConfigKey = "mathLabAiConfig";
+
+    function getAiConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(aiConfigKey) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function setAiStatus() {
+      const config = getAiConfig();
+      aiStatus.innerHTML = config.baseUrl && config.apiKey
+        ? `<span class="dot"></span>真实 AI 已配置`
+        : `<span class="dot"></span>本地讲解模式`;
+    }
+
+    function loadAiConfig() {
+      const config = getAiConfig();
+      aiBaseUrl.value = config.baseUrl || "";
+      aiApiKey.value = config.apiKey || "";
+      aiModel.value = config.model || "gpt-4o-mini";
+      setAiStatus();
+    }
+
+    saveAiConfig.addEventListener("click", () => {
+      localStorage.setItem(aiConfigKey, JSON.stringify({
+        baseUrl: aiBaseUrl.value.trim(),
+        apiKey: aiApiKey.value.trim(),
+        model: aiModel.value.trim() || "gpt-4o-mini"
+      }));
+      setAiStatus();
+      addBubble("AI接口设置已保存。下一次提问会优先调用真实模型。", "ai");
+    });
+
+    async function askRealAi(text) {
+      const config = getAiConfig();
+      if (!config.baseUrl || !config.apiKey) return "";
+      const lesson = lessons[current];
+      const endpoint = `${config.baseUrl.replace(/\/+$/, "")}/chat/completions`;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${config.apiKey}`
+        },
+        body: JSON.stringify({
+          model: config.model || "gpt-4o-mini",
+          temperature: 0.25,
+          messages: [
+            { role: "system", content: "你是七年级数学预习AI助教。回答要准确、温和、分步骤，优先启发学生思考。每次回答控制在180字以内，不要编造视频或外部链接。" },
+            { role: "user", content: `当前专题：有理数。当前课时：${lesson.title}。学习目标：${lesson.task}。学生问题：${text}` }
+          ]
+        })
+      });
+      if (!response.ok) throw new Error(`AI接口返回 ${response.status}`);
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content?.trim() || "";
+    }
+
+    async function answerQuestion(text) {
+      const bubble = addBubble("正在连接AI助教...", "ai");
+      try {
+        bubble.textContent = await askRealAi(text) || replyFor(text);
+      } catch (error) {
+        bubble.textContent = `AI接口暂时不可用，先用本地讲解帮你：${replyFor(text)}`;
+      }
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function submitQuestion(event) {
+      event.preventDefault();
+      const text = askInput.value.trim();
+      if (!text) return;
+      addBubble(text, "user");
+      askInput.value = "";
+      await answerQuestion(text);
+    }
+
+    askForm.addEventListener("submit", submitQuestion);
+    askInput.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
+      submitQuestion(event);
+    });
+
+    quick.addEventListener("click", event => {
+      const btn = event.target.closest("button");
+      if (!btn) return;
+      addBubble(btn.textContent, "user");
+      answerQuestion(btn.textContent);
+    });
+
+    loadAiConfig();
+    initNav();
+    initTicks();
+    renderLesson(current);
+  </script>
+</body>
+</html>
